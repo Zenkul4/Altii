@@ -5,11 +5,7 @@ using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Hotel;
 
-/// <summary>
-/// Entidad Habitación. Cada habitación pertenece a una Categoría y mantiene
-/// su estado de disponibilidad. Los cambios de estado se realizan mediante
-/// métodos de dominio para garantizar invariantes.
-/// </summary>
+/// Entidad Habitación.
 public class Habitacion : EntidadBase
 {
     public string Numero { get; private set; } = string.Empty;
@@ -18,11 +14,9 @@ public class Habitacion : EntidadBase
     public string? Notas { get; private set; }
     public bool Activa { get; private set; } = true;
 
-    // AGREGADO: metadatos para reporting y housekeeping
     public DateTime? UltimaLimpieza { get; private set; }
     public int? LimpiadaPorEmpleadoId { get; private set; }
 
-    // FK y navegación
     public int CategoriaId { get; private set; }
     public Categoria Categoria { get; private set; } = null!;
 
@@ -41,7 +35,6 @@ public class Habitacion : EntidadBase
         };
     }
 
-    // --- Transiciones de estado del dominio ---
 
     public void MarcarOcupada() => CambiarEstado(EstadoHabitacion.Ocupada);
     public void MarcarDisponible() => CambiarEstado(EstadoHabitacion.Disponible);
@@ -49,7 +42,6 @@ public class Habitacion : EntidadBase
     public void EnviarAMantenimiento() => CambiarEstado(EstadoHabitacion.Mantenimiento);
     public void DesactivarServicio() => CambiarEstado(EstadoHabitacion.FueraDeServicio);
 
-    /// <summary>Registra cuando se completó la limpieza de la habitación.</summary>
     public void RegistrarLimpieza(int empleadoId)
     {
         UltimaLimpieza = DateTime.UtcNow;

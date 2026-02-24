@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Booking;
 
-/// Entidad raíz del agregado Reserva. Centraliza las reglas de negocio de disponibilidad, fechas y cálculo de tarifa total.
+/// Entidad raíz del agregado Reserva. 
 public class Reserva : EntidadBase
 {
     public string CodigoConfirmacion { get; private set; } = string.Empty;
@@ -35,7 +35,7 @@ public class Reserva : EntidadBase
     public ICollection<Pago> Pagos { get; private set; } = [];
 
     private Reserva() { }
-    /// Crea una reserva validando fechas y calculando el total automáticamente.
+
     public static Reserva Crear(int usuarioId, int habitacionId, DateTime entrada,
                                 DateTime salida, int huespedes, decimal precioNoche,
                                 string? notas = null, bool pagoRequerido = true)
@@ -58,7 +58,7 @@ public class Reserva : EntidadBase
         };
     }
 
-    // Transiciones de estado 
+
 
     public Result Confirmar()
     {

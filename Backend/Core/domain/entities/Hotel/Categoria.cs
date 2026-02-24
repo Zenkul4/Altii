@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Hotel;
 
-/// <summary>Categoría/tipo de habitación (Estándar, Suite, Deluxe, etc.).</summary>
+/// Categoría/tipo de habitación 
 public class Categoria : EntidadBase
 {
     public string Nombre { get; private set; } = string.Empty;
@@ -12,10 +12,9 @@ public class Categoria : EntidadBase
     public int CapacidadMaxima { get; private set; }
     public string? ImagenUrl { get; private set; }
 
-    // Tarifas dinámicas por temporada (AGREGADO: permite escalar pricing sin tocar entidad)
+  
     public decimal? MultiplierTemporadaAlta { get; private set; }
 
-    // Navegación
     public ICollection<Habitacion> Habitaciones { get; private set; } = [];
 
     private Categoria() { }
@@ -46,7 +45,6 @@ public class Categoria : EntidadBase
         MultiplierTemporadaAlta = multiplier ?? MultiplierTemporadaAlta;
     }
 
-    /// <summary>Calcula el precio por noche aplicando multiplicador de temporada.</summary>
     public decimal CalcularPrecioNoche(bool esTemporadaAlta) =>
         esTemporadaAlta ? PrecioBaseNoche * (MultiplierTemporadaAlta ?? 1m) : PrecioBaseNoche;
 }

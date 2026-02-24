@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Security;
 
-/// <summary>
 /// Entidad usuario del sistema. Soporta clientes y staff (recepcionista/admin).
-/// La contraseña nunca se expone: solo se almacena el hash (BCrypt).
-/// </summary>
+
 public class Usuario : EntidadBase
 {
     public string Nombre { get; private set; } = string.Empty;
@@ -22,7 +20,6 @@ public class Usuario : EntidadBase
     public int IntentosFallidos { get; private set; } = 0;
     public DateTime? BloqueadoHasta { get; private set; }
 
-    // FK y navegación
     public int RolId { get; private set; }
     public Rol Rol { get; private set; } = null!;
 
@@ -46,7 +43,6 @@ public class Usuario : EntidadBase
         };
     }
 
-    /// <summary>Actualiza datos personales del usuario.</summary>
     public void ActualizarPerfil(string nombre, string apellido, string? telefono, string? documento)
     {
         Nombre = nombre.Trim();
@@ -55,7 +51,6 @@ public class Usuario : EntidadBase
         Documento = documento?.Trim();
     }
 
-    /// <summary>Registra acceso exitoso y resetea intentos fallidos.</summary>
     public void RegistrarAccesoExitoso()
     {
         UltimoAcceso = DateTime.UtcNow;
@@ -63,9 +58,7 @@ public class Usuario : EntidadBase
         BloqueadoHasta = null;
     }
 
-    /// <summary>
-    /// Incrementa intentos fallidos. Bloquea la cuenta a los 5 intentos por 30 minutos.
-    /// </summary>
+
     public void RegistrarAccesoFallido()
     {
         IntentosFallidos++;
