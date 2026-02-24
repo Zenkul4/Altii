@@ -14,7 +14,7 @@ public class Usuario : EntidadBase
     public string Email { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
     public string? Telefono { get; private set; }
-    public string? Documento { get; private set; } // Cédula / Pasaporte
+    public string? Documento { get; private set; } 
     public EstadoUsuario Estado { get; private set; } = EstadoUsuario.Activo;
     public DateTime? UltimoAcceso { get; private set; }
     public int IntentosFallidos { get; private set; } = 0;
