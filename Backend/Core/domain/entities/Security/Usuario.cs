@@ -1,19 +1,83 @@
-using ALTI.Domain.Base;
-using ALTI.Domain.Entities.Booking;
+using Alti.Core.Domain.Base;
+using Alti.Core.Domain.Enums;
+using System;
 using System.Collections.Generic;
 
-namespace ALTI.Domain.Entities.Security
-{
-    public class Usuario : AuditEntity
-    {
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string Telefono { get; set; }
+namespace Alti.Core.Domain.Entities.Security;
 
-        public int RolId { get; set; }
-        public virtual Rol Rol { get; set; }
-        public virtual ICollection<Reserva> Reservas { get; set; }
+/// <summary>
+/// Entidad usuario del sistema. Soporta clientes y staff (recepcionista/admin).
+/// La contraseña nunca se expone: solo se almacena el hash (BCrypt).
+/// </summary>
+public class Usuario : EntidadBase
+{
+    public string Nombre { get; private set; } = string.Empty;
+    public string Apellido { get; private set; } = string.Empty;
+    public string Email { get; private set; } = string.Empty;
+    public string PasswordHash { get; private set; } = string.Empty;
+    public string? Telefono { get; private set; }
+    public string? Documento { get; private set; } // Cédula / Pasaporte
+    public EstadoUsuario Estado { get; private set; } = EstadoUsuario.Activo;
+    public DateTime? UltimoAcceso { get; private set; }
+    public int IntentosFallidos { get; private set; } = 0;
+    public DateTime? BloqueadoHasta { get; private set; }
+
+    // FK y navegación
+    public int RolId { get; private set; }
+    public Rol Rol { get; private set; } = null!;
+
+    public ICollection<Entities.Booking.Reserva> Reservas { get; private set; } = [];
+
+    private Usuario() { }
+
+    public static Usuario Crear(string nombre, string apellido, string email,
+                                string passwordHash, int rolId, string? telefono = null,
+                                string? documento = null)
+    {
+        return new Usuario
+        {
+            Nombre = nombre.Trim(),
+            Apellido = apellido.Trim(),
+            Email = email.Trim().ToLower(),
+            PasswordHash = passwordHash,
+            RolId = rolId,
+            Telefono = telefono?.Trim(),
+            Documento = documento?.Trim()
+        };
     }
+
+    /// <summary>Actualiza datos personales del usuario.</summary>
+    public void ActualizarPerfil(string nombre, string apellido, string? telefono, string? documento)
+    {
+        Nombre = nombre.Trim();
+        Apellido = apellido.Trim();
+        Telefono = telefono?.Trim();
+        Documento = documento?.Trim();
+    }
+
+    /// <summary>Registra acceso exitoso y resetea intentos fallidos.</summary>
+    public void RegistrarAccesoExitoso()
+    {
+        UltimoAcceso = DateTime.UtcNow;
+        IntentosFallidos = 0;
+        BloqueadoHasta = null;
+    }
+
+    /// <summary>
+    /// Incrementa intentos fallidos. Bloquea la cuenta a los 5 intentos por 30 minutos.
+    /// </summary>
+    public void RegistrarAccesoFallido()
+    {
+        IntentosFallidos++;
+        if (IntentosFallidos >= 5)
+            BloqueadoHasta = DateTime.UtcNow.AddMinutes(30);
+    }
+
+    public bool EstaBloqueado() => BloqueadoHasta.HasValue && BloqueadoHasta > DateTime.UtcNow;
+    public bool EstaActivo() => Estado == EstadoUsuario.Activo && !EstaEliminado;
+    public string NombreCompleto() => $"{Nombre} {Apellido}";
+
+    public void CambiarPassword(string nuevoHash) => PasswordHash = nuevoHash;
+    public void CambiarEstado(EstadoUsuario estado) => Estado = estado;
+    public void CambiarRol(int rolId) => RolId = rolId;
 }
