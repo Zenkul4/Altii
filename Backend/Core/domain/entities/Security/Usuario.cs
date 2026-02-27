@@ -23,7 +23,7 @@ public class Usuario : EntidadBase
     public int RolId { get; private set; }
     public Rol Rol { get; private set; } = null!;
 
-    public ICollection<Entities.Booking.Reserva> Reservas { get; private set; } = [];
+    public ICollection<Reserva> Reservas { get; private set; } = [];
 
     private Usuario() { }
 
