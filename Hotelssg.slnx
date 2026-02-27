@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Backend/">
+    <Project Path="Backend/Api/Api.csproj" />
+    <Project Path="Backend/Application/Application.csproj" />
+    <Project Path="Backend/Core/Core.csproj" />
+    <Project Path="Backend/Infrastructure/Infrastructure.csproj" />
+    <Project Path="Backend/IOC/IOC.csproj" />
+  </Folder>
+  <Folder Name="/Frontend/">
+    <Project Path="Frontend/Desktop/Desktop.csproj" />
+    <Project Path="Frontend/Web/Web.csproj" />
+  </Folder>
+</Solution>

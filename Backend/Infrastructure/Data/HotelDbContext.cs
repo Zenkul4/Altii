@@ -11,10 +11,7 @@ using System.Threading.Tasks;
 
 namespace Alti.Infrastructure.Data;
 
-/// <summary>
-/// DbContext principal. Centraliza: soft delete automático, auditoría y
-/// concurrencia optimista para prevenir el problema de "double booking".
-/// </summary>
+/// DbContext principal
 public sealed class HotelDbContext : DbContext
 {
     private readonly int? _usuarioActualId;
@@ -35,10 +32,8 @@ public sealed class HotelDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Aplica todas las configuraciones de la carpeta Configurations/
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(HotelDbContext).Assembly);
 
-        // Filtro global: excluye entidades eliminadas lógicamente de TODAS las consultas
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             if (typeof(EntidadBase).IsAssignableFrom(entityType.ClrType))
