@@ -1,15 +1,16 @@
-using Alti.Core.Domain.Base;
+
 using Alti.Core.Domain.Common;
 using Alti.Core.Domain.Entities.Hotel;
 using Alti.Core.Domain.Entities.Security;
 using Alti.Core.Domain.Enums;
+using ALTI.Domain.Base;
 using System;
 using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Booking;
 
 /// Entidad raíz del agregado Reserva. 
-public class Reserva : EntidadBase
+public class Reserva : AuditEntity
 {
     public string CodigoConfirmacion { get; private set; } = string.Empty;
     public DateTime FechaEntrada { get; private set; }

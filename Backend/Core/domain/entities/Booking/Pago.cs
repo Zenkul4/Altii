@@ -1,6 +1,6 @@
-using Alti.Core.Domain.Base;
 using Alti.Core.Domain.Common;
 using Alti.Core.Domain.Enums;
+using ALTI.Domain.Base;
 using System;
 
 namespace Alti.Core.Domain.Entities.Booking;
@@ -8,7 +8,7 @@ namespace Alti.Core.Domain.Entities.Booking;
 
 /// Entidad Pago. Registra cada transacción de pago asociada a una Reserva.
 
-public class Pago : EntidadBase
+public class Pago : AuditEntity
 {
     public string ReferenciaPago { get; private set; } = string.Empty;
     public decimal Monto { get; private set; }

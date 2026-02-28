@@ -1,10 +1,10 @@
-using Alti.Core.Domain.Base;
+using ALTI.Domain.Base;
 using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Hotel;
 
 /// Categoría/tipo de habitación 
-public class Categoria : EntidadBase
+public class Categoria : AuditEntity
 {
     public string Nombre { get; private set; } = string.Empty;
     public string? Descripcion { get; private set; }

@@ -1,12 +1,12 @@
-using Alti.Core.Domain.Base;
 using Alti.Core.Domain.Enums;
+using ALTI.Domain.Base;
 using System;
 using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Hotel;
 
 /// Entidad Habitación.
-public class Habitacion : EntidadBase
+public class Habitacion : AuditEntity
 {
     public string Numero { get; private set; } = string.Empty;
     public int Piso { get; private set; }

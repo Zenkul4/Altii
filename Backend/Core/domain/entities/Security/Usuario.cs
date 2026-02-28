@@ -1,5 +1,6 @@
-using Alti.Core.Domain.Base;
+using Alti.Core.Domain.Entities.Booking;
 using Alti.Core.Domain.Enums;
+using ALTI.Domain.Base;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +8,7 @@ namespace Alti.Core.Domain.Entities.Security;
 
 /// Entidad usuario del sistema. Soporta clientes y staff (recepcionista/admin).
 
-public class Usuario : EntidadBase
+public class Usuario : AuditEntity
 {
     public string Nombre { get; private set; } = string.Empty;
     public string Apellido { get; private set; } = string.Empty;
