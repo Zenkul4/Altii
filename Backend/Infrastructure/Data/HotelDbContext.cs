@@ -1,4 +1,3 @@
-using Alti.Core.Domain.Base;
 using Alti.Core.Domain.Entities.Booking;
 using Alti.Core.Domain.Entities.Hotel;
 using Alti.Core.Domain.Entities.Security;
