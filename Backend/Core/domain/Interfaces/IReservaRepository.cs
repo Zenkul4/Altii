@@ -1,6 +1,6 @@
 ﻿using Alti.Core.Domain.Entities.Booking;
 using Alti.Core.Domain.Enums;
-using Alti.Infrastructure.Repositories.Interfaces;
+using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;

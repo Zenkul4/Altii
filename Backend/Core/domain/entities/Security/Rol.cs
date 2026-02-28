@@ -1,11 +1,11 @@
-using Alti.Core.Domain.Base;
 using Alti.Core.Domain.Enums;
+using ALTI.Domain.Base;
 using System.Collections.Generic;
 
 namespace Alti.Core.Domain.Entities.Security;
 
 /// Define los roles del sistema y sus permisos asociados.
-public class Rol : EntidadBase
+public class Rol : AuditEntity
 {
     public string Nombre { get; private set; } = string.Empty;
     public string? Descripcion { get; private set; }

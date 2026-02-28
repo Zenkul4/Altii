@@ -1,9 +1,6 @@
 ﻿using Alti.Core.Domain.Entities.Security;
 using Alti.Core.Domain.Enums;
-using Alti.Infrastructure.Repositories.Interfaces;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using Domain.Interfaces;
 
 namespace Infrastructure.Repositories.Interfaces
 {

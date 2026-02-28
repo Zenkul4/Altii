@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
+using Domain.Interfaces;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using Alti.Core.Domain.Entities.Booking;
-using Alti.Core.Domain.Entities.Hotel;
-using Alti.Core.Domain.Entities.Security;
-using Alti.Core.Domain.Enums;
-using ALTI.Domain.Base;
 
-namespace Alti.Infrastructure.Repositories.Interfaces;
+
+namespace Domain.Interfaces;
 
 public interface IRepository<T>
 {
