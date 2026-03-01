@@ -5,6 +5,7 @@
     <Project Path="Backend/Core/Core.csproj" />
     <Project Path="Backend/Infrastructure/Infrastructure.csproj" />
     <Project Path="Backend/IOC/IOC.csproj" />
+    <Project Path="Persistence/Persistence.csproj" Id="465d22c3-125f-4323-8991-b9b45f2370d6" />
   </Folder>
   <Folder Name="/Frontend/">
     <Project Path="Frontend/Desktop/Desktop.csproj" />
