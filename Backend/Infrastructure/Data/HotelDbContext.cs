@@ -1,6 +1,7 @@
 using Alti.Core.Domain.Entities.Booking;
 using Alti.Core.Domain.Entities.Hotel;
 using Alti.Core.Domain.Entities.Security;
+using Alti.Infrastructure.Data.Seed;
 using ALTI.Domain.Base; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -37,7 +38,7 @@ public sealed class HotelDbContext : DbContext
                     .HasQueryFilter(BuildSoftDeleteFilter(entityType.ClrType));
             }
         }
-
+        SeedData.AplicarSeed(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 

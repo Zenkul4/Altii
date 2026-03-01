@@ -1,3 +1,4 @@
+using Alti.Infrastructure;
 using Alti.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddInfrastructureServices();
 
 builder.Services.AddDbContext<HotelDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Alti.Infrastructure")));
