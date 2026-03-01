@@ -1,52 +1,69 @@
-namespace Alti.Core.Domain.Enums;
+namespace Alti.Domain.Enums;
 
-public enum EstadoReserva
+public enum UserRole
 {
-    Pendiente = 1,
-    Confirmada = 2,
-    CheckIn = 3,
-    CheckOut = 4,
-    Cancelada = 5,
-    NoShow = 6
+    Guest,
+    Receptionist,
+    Administrator
 }
 
-public enum EstadoHabitacion
+public enum RoomStatus
 {
-    Disponible = 1,
-    Ocupada = 2,
-    EnLimpieza = 3,
-    Mantenimiento = 4,
-    FueraDeServicio = 5
+    Available,
+    Occupied,
+    Cleaning,
+    Blocked,
+    Inactive
 }
 
-public enum EstadoPago
+public enum RoomType
 {
-    Pendiente = 1,
-    Procesando = 2,
-    Completado = 3,
-    Fallido = 4,
-    Reembolsado = 5
+    Single,
+    Double,
+    Suite,
+    Family,
+    Penthouse
 }
 
-public enum MetodoPago
+public enum BookingStatus
 {
-    Efectivo = 1,
-    TarjetaCredito = 2,
-    TarjetaDebito = 3,
-    Transferencia = 4,
-    PagoEnLinea = 5
+    PendingPayment,
+    Confirmed,
+    CheckedIn,
+    CheckedOut,
+    Cancelled,
+    Expired
 }
 
-public enum TipoRol
+public enum PaymentStatus
 {
-    Cliente = 1,
-    Recepcionista = 2,
-    Administrador = 3
+    Pending,
+    Approved,
+    Rejected,
+    Refunded
 }
 
-public enum EstadoUsuario
+public enum AuditAction
 {
-    Activo = 1,
-    Inactivo = 2,
-    Suspendido = 3
+    Create,
+    Update,
+    Delete,
+    Login,
+    Logout,
+    CheckIn,
+    CheckOut,
+    Payment,
+    Cancellation,
+    RoomBlock,
+    RoomRelease
+}
+
+public enum AuditEntity
+{
+    User,
+    Room,
+    Booking,
+    Payment,
+    Rate,
+    Season
 }
