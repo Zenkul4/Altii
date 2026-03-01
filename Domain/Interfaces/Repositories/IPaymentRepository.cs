@@ -1,6 +1,6 @@
 ﻿using Alti.Domain.Entities;
 
-namespace Alti.Domain.Interfaces.Repositories;
+namespace Core.domain.Interfaces.Repositories;
 
 public interface IPaymentRepository
 {
