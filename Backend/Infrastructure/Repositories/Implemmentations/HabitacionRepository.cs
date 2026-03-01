@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Alti.Core.Domain.Entities.Hotel;
 using Alti.Core.Domain.Enums;
 using Infrastructure.Repositories.Interfaces;
+using Domain.Interfaces;
 
 namespace Infrastructure.Repositories
 {

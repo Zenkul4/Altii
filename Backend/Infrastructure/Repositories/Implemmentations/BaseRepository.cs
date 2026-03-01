@@ -1,5 +1,6 @@
 ﻿using Alti.Infrastructure.Repositories.Interfaces;
 using ALTI.Domain.Base;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
