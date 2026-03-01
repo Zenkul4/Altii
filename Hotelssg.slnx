@@ -2,11 +2,11 @@
   <Folder Name="/Backend/">
     <Project Path="Backend/Api/Api.csproj" />
     <Project Path="Backend/Application/Application.csproj" />
-    <Project Path="Backend/Core/Core.csproj" />
     <Project Path="Backend/Infrastructure/Infrastructure.csproj" />
-    <Project Path="Backend/IOC/IOC.csproj" />
+    <Project Path="Domain/Domain.csproj" Id="d6364146-540d-4f01-95cd-535b6e7b1478" />
     <Project Path="Persistence/Persistence.csproj" Id="465d22c3-125f-4323-8991-b9b45f2370d6" />
   </Folder>
+  <Folder Name="/Backend/IOC/" />
   <Folder Name="/Frontend/">
     <Project Path="Frontend/Desktop/Desktop.csproj" />
     <Project Path="Frontend/Web/Web.csproj" />
