@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Alti.Core.Domain.Entities.Booking;
 using Alti.Core.Domain.Enums;
 using Infrastructure.Repositories.Interfaces;
+using Domain.Interfaces;
 
 namespace Infrastructure.Repositories
 {

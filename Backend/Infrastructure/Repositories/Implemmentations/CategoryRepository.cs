@@ -1,4 +1,5 @@
 ﻿using Alti.Core.Domain.Entities.Hotel;
+using Core.domain.Interfaces;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
