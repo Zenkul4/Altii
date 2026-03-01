@@ -1,5 +1,4 @@
-﻿using Alti.Core.Domain.Interfaces;
-using Alti.Infrastructure.Repositories.Implementations;
+﻿
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Alti.Infrastructure;
