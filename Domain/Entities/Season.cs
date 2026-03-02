@@ -1,20 +1,15 @@
 ﻿using Alti.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Core.domain.entities
+namespace Alti.Domain.Entities;
+
+public class Season : BaseEntity
 {
-    public class Season : BaseEntity
-    {
-        private Season() { }
+    private Season() { }
 
-        public string Name { get; private set; } = string.Empty;
-        public DateOnly StartDate { get; private set; }
-        public DateOnly EndDate { get; private set; }
-        public decimal Multiplier { get; private set; } = 1.00m;
-        public string? Description { get; private set; }
-        public int CreatedById { get; private set; }
-
-    }
+    public string Name { get; internal set; } = string.Empty;
+    public DateOnly StartDate { get; internal set; }
+    public DateOnly EndDate { get; internal set; }
+    public decimal Multiplier { get; internal set; } = 1.00m;
+    public string? Description { get; internal set; }
+    public int CreatedById { get; internal set; }
 }
