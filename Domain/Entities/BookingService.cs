@@ -5,7 +5,7 @@ namespace Alti.Domain.Entities;
 
 public class BookingService
 {
-    private BookingService() { }
+    public BookingService() { }
 
     public int Id { get; internal set; }
     public int BookingId { get; internal set; }
