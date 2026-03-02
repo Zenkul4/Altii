@@ -1,9 +1,8 @@
 ﻿using Alti.Domain.Entities;
 using Alti.Domain.Enums;
+using Core.domain.entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Configurations;
-using System.Reflection.Emit;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Persistence.Context;
 

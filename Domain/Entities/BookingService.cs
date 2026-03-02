@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alti.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,32 +18,8 @@ namespace Core.domain.entities
         public DateTimeOffset RegisteredAt { get; private set; } = DateTimeOffset.UtcNow;
 
         public Booking Booking { get; private set; } = null!;
-        public AdditionalService Service { get; private set; } = null!;
         public User RegisteredBy { get; private set; } = null!;
 
-        public decimal Subtotal => Quantity * UnitPrice;
 
-        public static BookingService Create(
-            int bookingId,
-            int serviceId,
-            int registeredById,
-            short quantity,
-            decimal unitPrice)
-        {
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
-
-            if (unitPrice < 0)
-                throw new ArgumentException("Unit price cannot be negative.", nameof(unitPrice));
-
-            return new BookingService
-            {
-                BookingId = bookingId,
-                ServiceId = serviceId,
-                RegisteredById = registeredById,
-                Quantity = quantity,
-                UnitPrice = unitPrice
-            };
-        }
     }
 }
