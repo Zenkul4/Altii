@@ -63,9 +63,5 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
         builder.HasIndex(r => r.Number)
             .IsUnique();
 
-        builder.HasMany(r => r.Bookings)
-            .WithOne(b => b.Room)
-            .HasForeignKey(b => b.RoomId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

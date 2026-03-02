@@ -61,10 +61,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(u => u.Email)
             .IsUnique();
-
-        builder.HasMany(u => u.GuestBookings)
-            .WithOne(b => b.Guest)
-            .HasForeignKey(b => b.GuestId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }
