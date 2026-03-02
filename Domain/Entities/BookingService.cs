@@ -1,25 +1,17 @@
 ﻿using Alti.Domain.Common;
 using System;
 using System.Collections.Generic;
-using System.Text;
+namespace Alti.Domain.Entities;
 
-namespace Core.domain.entities
+public class BookingService
 {
-    public class BookingService
-    {
-        private BookingService() { }
+    private BookingService() { }
 
-        public int Id { get; private set; }
-        public int BookingId { get; private set; }
-        public int ServiceId { get; private set; }
-        public int RegisteredById { get; private set; }
-        public short Quantity { get; private set; }
-        public decimal UnitPrice { get; private set; }
-        public DateTimeOffset RegisteredAt { get; private set; } = DateTimeOffset.UtcNow;
-
-        public Booking Booking { get; private set; } = null!;
-        public User RegisteredBy { get; private set; } = null!;
-
-
-    }
+    public int Id { get; internal set; }
+    public int BookingId { get; internal set; }
+    public int ServiceId { get; internal set; }
+    public int RegisteredById { get; internal set; }
+    public short Quantity { get; internal set; }
+    public decimal UnitPrice { get; internal set; }
+    public DateTimeOffset RegisteredAt { get; internal set; } = DateTimeOffset.UtcNow;
 }
