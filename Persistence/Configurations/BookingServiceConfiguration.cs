@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Core.domain.entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -44,7 +43,17 @@ public class BookingServiceConfiguration : IEntityTypeConfiguration<BookingServi
 
         builder.HasIndex(bs => bs.BookingId);
 
-        builder.HasOne(bs => bs.RegisteredBy)
+        builder.HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(bs => bs.BookingId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<AdditionalService>()
+            .WithMany()
+            .HasForeignKey(bs => bs.ServiceId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<User>()
             .WithMany()
             .HasForeignKey(bs => bs.RegisteredById)
             .OnDelete(DeleteBehavior.Restrict);

@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Core.domain.entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -62,6 +61,5 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.HasIndex(r => r.Number)
             .IsUnique();
-
     }
 }
