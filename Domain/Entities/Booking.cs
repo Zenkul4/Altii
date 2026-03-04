@@ -1,27 +1,21 @@
-﻿using Alti.Domain.Enums;
-using Alti.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Alti.Domain.Common;
+using Alti.Domain.Enums;
 
-namespace Core.domain.entities
+namespace Alti.Domain.Entities;
+
+public class Booking : BaseEntity
 {
-    public class Booking : BaseEntity
-    {
-        private Booking() { }
+    public Booking() { }
 
-        public string Code { get; private set; } = string.Empty;
-        public int GuestId { get; private set; }
-        public int RoomId { get; private set; }
-        public int? AttendedById { get; private set; }
-        public DateOnly CheckInDate { get; private set; }
-        public DateOnly CheckOutDate { get; private set; }
-        public decimal PricePerNight { get; private set; }
-        public decimal TotalPrice { get; private set; }
-        public BookingStatus Status { get; private set; } = BookingStatus.PendingPayment;
-        public DateTimeOffset ExpiresAt { get; private set; }
-        public string? Notes { get; private set; }
-
-
-    }
+    public string Code { get; internal set; } = string.Empty;
+    public int GuestId { get; internal set; }
+    public int RoomId { get; internal set; }
+    public int? AttendedById { get; internal set; }
+    public DateOnly CheckInDate { get; internal set; }
+    public DateOnly CheckOutDate { get; internal set; }
+    public decimal PricePerNight { get; internal set; }
+    public decimal TotalPrice { get; internal set; }
+    public BookingStatus Status { get; internal set; } = BookingStatus.PendingPayment;
+    public DateTimeOffset ExpiresAt { get; internal set; }
+    public string? Notes { get; internal set; }
 }

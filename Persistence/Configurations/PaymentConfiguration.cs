@@ -54,5 +54,10 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .HasFilter("external_reference IS NOT NULL");
 
         builder.HasIndex(p => p.BookingId);
+
+        builder.HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(p => p.BookingId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

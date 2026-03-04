@@ -77,6 +77,19 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
 
         builder.HasIndex(b => b.GuestId);
 
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(b => b.GuestId)
+            .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne<Room>()
+            .WithMany()
+            .HasForeignKey(b => b.RoomId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(b => b.AttendedById)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

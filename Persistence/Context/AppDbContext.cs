@@ -1,6 +1,5 @@
 ﻿using Alti.Domain.Entities;
 using Alti.Domain.Enums;
-using Core.domain.entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Configurations;
 
@@ -25,7 +24,6 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.HasDefaultSchema("alti");
-
         modelBuilder.HasPostgresExtension("btree_gist");
 
         modelBuilder.HasPostgresEnum<UserRole>();
@@ -36,14 +34,6 @@ public class AppDbContext : DbContext
         modelBuilder.HasPostgresEnum<AuditAction>();
         modelBuilder.HasPostgresEnum<AuditEntity>();
 
-        modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new RoomConfiguration());
-        modelBuilder.ApplyConfiguration(new SeasonConfiguration());
-        modelBuilder.ApplyConfiguration(new RateConfiguration());
-        modelBuilder.ApplyConfiguration(new BookingConfiguration());
-        modelBuilder.ApplyConfiguration(new PaymentConfiguration());
-        modelBuilder.ApplyConfiguration(new AdditionalServiceConfiguration());
-        modelBuilder.ApplyConfiguration(new BookingServiceConfiguration());
-        modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }

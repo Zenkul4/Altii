@@ -61,6 +61,5 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.HasIndex(r => r.Number)
             .IsUnique();
-
     }
 }

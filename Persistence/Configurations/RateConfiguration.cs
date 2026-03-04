@@ -45,7 +45,12 @@ public class RateConfiguration : IEntityTypeConfiguration<Rate>
         builder.HasIndex(r => new { r.SeasonId, r.RoomType })
             .IsUnique();
 
-        builder.HasOne(r => r.CreatedBy)
+        builder.HasOne<Season>()
+            .WithMany()
+            .HasForeignKey(r => r.SeasonId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<User>()
             .WithMany()
             .HasForeignKey(r => r.CreatedById)
             .OnDelete(DeleteBehavior.Restrict);
