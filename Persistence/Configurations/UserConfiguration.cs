@@ -1,4 +1,5 @@
 ﻿using Alti.Domain.Entities;
+using Alti.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
