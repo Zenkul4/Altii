@@ -59,7 +59,7 @@ public class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
         builder.HasIndex(a => new { a.Entity, a.EntityId });
         builder.HasIndex(a => a.ExecutedAt);
 
-        builder.HasOne(a => a.User)
+        builder.HasOne<User>()
             .WithMany()
             .HasForeignKey(a => a.UserId)
             .OnDelete(DeleteBehavior.Restrict);

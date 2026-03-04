@@ -43,10 +43,5 @@ public class AdditionalServiceConfiguration : IEntityTypeConfiguration<Additiona
 
         builder.HasIndex(s => s.Name)
             .IsUnique();
-
-        builder.HasMany(s => s.BookingServices)
-            .WithOne(bs => bs.Service)
-            .HasForeignKey(bs => bs.ServiceId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }
