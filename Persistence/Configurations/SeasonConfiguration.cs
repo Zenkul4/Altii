@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Core.domain.entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -46,5 +45,14 @@ public class SeasonConfiguration : IEntityTypeConfiguration<Season>
         builder.Property(s => s.CreatedAt)
             .HasColumnName("created_at")
             .HasDefaultValueSql("NOW()");
+
+        builder.Property(s => s.UpdatedAt)
+            .HasColumnName("updated_at")
+            .HasDefaultValueSql("NOW()");
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(s => s.CreatedById)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Core.domain.entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -78,6 +77,19 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
 
         builder.HasIndex(b => b.GuestId);
 
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(b => b.GuestId)
+            .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne<Room>()
+            .WithMany()
+            .HasForeignKey(b => b.RoomId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(b => b.AttendedById)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
