@@ -1,6 +1,6 @@
 ﻿using Alti.Domain.Entities;
 
-namespace Core.domain.Interfaces.Repositories;
+namespace Alti.Domain.Interfaces.Repositories;
 
 public interface IAdditionalServiceRepository
 {
