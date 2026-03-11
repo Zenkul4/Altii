@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Interfaces.Repositories;
-using Core.domain.Interfaces.Repositories;
 
 namespace Alti.Domain.Interfaces;
 
