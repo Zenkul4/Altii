@@ -1,6 +1,5 @@
 ﻿using Alti.Domain.Entities;
 using Alti.Domain.Interfaces.Repositories;
-using Core.domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 
