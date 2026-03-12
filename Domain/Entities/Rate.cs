@@ -5,7 +5,7 @@ namespace Alti.Domain.Entities;
 
 public class Rate : BaseEntity
 {
-    public Rate() { }
+    private Rate() { }
 
     public int SeasonId { get; internal set; }
     public RoomType RoomType { get; internal set; }

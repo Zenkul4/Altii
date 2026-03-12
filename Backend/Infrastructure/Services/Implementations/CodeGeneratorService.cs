@@ -1,4 +1,4 @@
-﻿using Infrastructure.Services.Interfaces;
+﻿using Application.Interfaces;
 
 namespace Infrastructure.Services.Implementations;
 
@@ -10,12 +10,10 @@ public class CodeGeneratorService : ICodeGeneratorService
     public string GenerateBookingCode()
     {
         int next;
-
         lock (_lock)
         {
             next = ++_sequence;
         }
-
         return $"RES-{DateTime.UtcNow:yyyy}-{next:D5}";
     }
 }
