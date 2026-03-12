@@ -4,7 +4,7 @@ namespace Alti.Domain.Entities;
 
 public class AdditionalService : BaseEntity
 {
-    private AdditionalService() { }
+    internal AdditionalService() { }
 
     public string Name { get; internal set; } = string.Empty;
     public string? Description { get; internal set; }
