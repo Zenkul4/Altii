@@ -1,6 +1,6 @@
 ﻿using Alti.Domain.Enums;
 
-namespace Application.DTOs.Rate;
+namespace Application.Dtos.Rate;
 
 public class RateResponseDto
 {

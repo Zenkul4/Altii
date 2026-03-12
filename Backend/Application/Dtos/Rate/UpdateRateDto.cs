@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Rate;
+﻿namespace Application.Dtos.Rate;
 
 public class UpdateRateDto
 {
