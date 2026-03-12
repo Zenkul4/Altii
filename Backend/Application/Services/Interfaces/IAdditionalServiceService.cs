@@ -1,4 +1,4 @@
-﻿using Application.DTOs.AdditionalService;
+﻿using Application.Dtos.AdditionalService;
 
 namespace Application.Services.Interfaces;
 
