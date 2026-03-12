@@ -6,27 +6,13 @@ using Persistence.Context;
 
 namespace Persistence.Repositories.Implementations;
 
-public class RateRepository : IRateRepository
+public class RateRepository : BaseRepository<Rate>, IRateRepository
 {
-    private readonly AppDbContext _context;
-
-    public RateRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<Rate?> GetByIdAsync(int id, CancellationToken ct = default)
-        => await _context.Rates.FirstOrDefaultAsync(r => r.Id == id, ct);
+    public RateRepository(AppDbContext context) : base(context) { }
 
     public async Task<Rate?> GetBySeasonAndTypeAsync(int seasonId, RoomType roomType, CancellationToken ct = default)
-        => await _context.Rates.FirstOrDefaultAsync(r => r.SeasonId == seasonId && r.RoomType == roomType, ct);
+        => await DbSet.FirstOrDefaultAsync(r => r.SeasonId == seasonId && r.RoomType == roomType, ct);
 
     public async Task<IReadOnlyList<Rate>> GetBySeasonAsync(int seasonId, CancellationToken ct = default)
-        => await _context.Rates.Where(r => r.SeasonId == seasonId).ToListAsync(ct);
-
-    public async Task AddAsync(Rate rate, CancellationToken ct = default)
-        => await _context.Rates.AddAsync(rate, ct);
-
-    public void Update(Rate rate)
-        => _context.Rates.Update(rate);
+        => await DbSet.Where(r => r.SeasonId == seasonId).ToListAsync(ct);
 }
