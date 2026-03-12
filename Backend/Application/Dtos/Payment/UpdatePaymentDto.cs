@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Payment;
+﻿namespace Application.Dtos.Payment;
 
 public class UpdatePaymentDto
 {

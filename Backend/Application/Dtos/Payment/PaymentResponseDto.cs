@@ -1,6 +1,6 @@
 ﻿using Alti.Domain.Enums;
 
-namespace Application.DTOs.Payment;
+namespace Application.Dtos.Payment;
 
 public class PaymentResponseDto
 {

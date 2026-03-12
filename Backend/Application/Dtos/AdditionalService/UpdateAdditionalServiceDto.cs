@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.AdditionalService;
+﻿namespace Application.Dtos.AdditionalService;
 
 public class UpdateAdditionalServiceDto
 {
