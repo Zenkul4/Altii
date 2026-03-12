@@ -26,9 +26,6 @@ public class BookingFactory : IBookingFactory
         if (pricePerNight <= 0)
             throw new ArgumentException("Price per night must be greater than zero.", nameof(pricePerNight));
 
-        if (expirationMinutes <= 0)
-            throw new ArgumentException("Expiration minutes must be greater than zero.", nameof(expirationMinutes));
-
         var nights = checkOutDate.DayNumber - checkInDate.DayNumber;
         var totalPrice = Math.Round(pricePerNight * nights, 2);
 

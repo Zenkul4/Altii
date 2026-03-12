@@ -6,35 +6,33 @@ using Persistence.Context;
 
 namespace Persistence.Repositories.Implementations;
 
-public class BookingRepository : IBookingRepository
+public class BookingRepository : BaseRepository<Booking>, IBookingRepository
 {
-    private readonly AppDbContext _context;
-
-    public BookingRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<Booking?> GetByIdAsync(int id, CancellationToken ct = default)
-        => await _context.Bookings.FirstOrDefaultAsync(b => b.Id == id, ct);
+    public BookingRepository(AppDbContext context) : base(context) { }
 
     public async Task<Booking?> GetByCodeAsync(string code, CancellationToken ct = default)
-        => await _context.Bookings.FirstOrDefaultAsync(b => b.Code == code.ToUpper(), ct);
+        => await DbSet.FirstOrDefaultAsync(b => b.Code == code.ToUpper(), ct);
 
-    public async Task<IReadOnlyList<Booking>> GetByGuestAsync(int guestId, CancellationToken ct = default)
-        => await _context.Bookings
+    public async Task<IReadOnlyList<Booking>> GetByGuestAsync(
+        int guestId, int page, int pageSize, CancellationToken ct = default)
+        => await DbSet
             .Where(b => b.GuestId == guestId)
             .OrderByDescending(b => b.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(ct);
 
-    public async Task<IReadOnlyList<Booking>> GetActiveAsync(CancellationToken ct = default)
-        => await _context.Bookings
+    public async Task<IReadOnlyList<Booking>> GetActiveAsync(
+        int page, int pageSize, CancellationToken ct = default)
+        => await DbSet
             .Where(b => b.Status == BookingStatus.Confirmed || b.Status == BookingStatus.CheckedIn)
             .OrderBy(b => b.CheckInDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(ct);
 
     public async Task<IReadOnlyList<Booking>> GetExpiredPendingAsync(CancellationToken ct = default)
-        => await _context.Bookings
+        => await DbSet
             .Where(b => b.Status == BookingStatus.PendingPayment && b.ExpiresAt <= DateTimeOffset.UtcNow)
             .ToListAsync(ct);
 
@@ -45,7 +43,7 @@ public class BookingRepository : IBookingRepository
         int? excludeBookingId = null,
         CancellationToken ct = default)
     {
-        var query = _context.Bookings.Where(b =>
+        var query = DbSet.Where(b =>
             b.RoomId == roomId &&
             b.Status != BookingStatus.Cancelled &&
             b.Status != BookingStatus.Expired &&
@@ -57,10 +55,4 @@ public class BookingRepository : IBookingRepository
 
         return await query.AnyAsync(ct);
     }
-
-    public async Task AddAsync(Booking booking, CancellationToken ct = default)
-        => await _context.Bookings.AddAsync(booking, ct);
-
-    public void Update(Booking booking)
-        => _context.Bookings.Update(booking);
 }

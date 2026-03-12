@@ -1,6 +1,6 @@
 ﻿using Alti.Domain.Enums;
 
-namespace Application.DTOs.User;
+namespace Application.Dtos.User;
 
 public class CreateUserDto
 {

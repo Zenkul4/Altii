@@ -12,7 +12,7 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistence(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration          configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(
@@ -21,16 +21,16 @@ public static class PersistenceServiceRegistration
             )
         );
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IRoomRepository, RoomRepository>();
-        services.AddScoped<ISeasonRepository, SeasonRepository>();
-        services.AddScoped<IRateRepository, RateRepository>();
-        services.AddScoped<IBookingRepository, BookingRepository>();
-        services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<IUnitOfWork,                  UnitOfWork>();
+        services.AddScoped<IUserRepository,              UserRepository>();
+        services.AddScoped<IRoomRepository,              RoomRepository>();
+        services.AddScoped<ISeasonRepository,            SeasonRepository>();
+        services.AddScoped<IRateRepository,              RateRepository>();
+        services.AddScoped<IBookingRepository,           BookingRepository>();
+        services.AddScoped<IPaymentRepository,           PaymentRepository>();
         services.AddScoped<IAdditionalServiceRepository, AdditionalServiceRepository>();
-        services.AddScoped<IBookingServiceRepository, BookingServiceRepository>();
-        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IBookingServiceRepository,    BookingServiceRepository>();
+        services.AddScoped<IAuditLogRepository,          AuditLogRepository>();
 
         return services;
     }

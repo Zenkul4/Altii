@@ -19,7 +19,7 @@ public class RoomDomainService : IRoomDomainService
     public void ReleaseBlock(Room room)
     {
         if (room.Status != RoomStatus.Blocked)
-            throw new InvalidOperationException($"Room {room.Number} is not blocked. Current status: {room.Status}.");
+            throw new InvalidOperationException($"Room {room.Number} is not blocked.");
 
         room.Status = RoomStatus.Available;
         room.UpdatedAt = DateTimeOffset.UtcNow;
@@ -37,7 +37,7 @@ public class RoomDomainService : IRoomDomainService
     public void SendToCleaning(Room room)
     {
         if (room.Status != RoomStatus.Occupied)
-            throw new InvalidOperationException($"Only occupied rooms can be sent to cleaning. Current: {room.Status}.");
+            throw new InvalidOperationException($"Only occupied rooms can be sent to cleaning.");
 
         room.Status = RoomStatus.Cleaning;
         room.UpdatedAt = DateTimeOffset.UtcNow;

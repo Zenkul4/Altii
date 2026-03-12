@@ -4,7 +4,7 @@ namespace Alti.Domain.Entities;
 
 public class Season : BaseEntity
 {
-    public Season() { }
+    internal Season() { }
 
     public string Name { get; internal set; } = string.Empty;
     public DateOnly StartDate { get; internal set; }

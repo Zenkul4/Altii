@@ -6,20 +6,12 @@ using Persistence.Context;
 
 namespace Persistence.Repositories.Implementations;
 
-public class RoomRepository : IRoomRepository
+public class RoomRepository : BaseRepository<Room>, IRoomRepository
 {
-    private readonly AppDbContext _context;
-
-    public RoomRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<Room?> GetByIdAsync(int id, CancellationToken ct = default)
-        => await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id, ct);
+    public RoomRepository(AppDbContext context) : base(context) { }
 
     public async Task<Room?> GetByNumberAsync(string number, CancellationToken ct = default)
-        => await _context.Rooms.FirstOrDefaultAsync(r => r.Number == number.ToUpper(), ct);
+        => await DbSet.FirstOrDefaultAsync(r => r.Number == number.ToUpper(), ct);
 
     public async Task<IReadOnlyList<Room>> GetAvailableAsync(
         DateOnly checkInDate,
@@ -28,7 +20,7 @@ public class RoomRepository : IRoomRepository
         short? minCapacity = null,
         CancellationToken ct = default)
     {
-        var occupiedRoomIds = await _context.Bookings
+        var occupiedRoomIds = await Context.Bookings
             .Where(b =>
                 b.Status != BookingStatus.Cancelled &&
                 b.Status != BookingStatus.Expired &&
@@ -38,7 +30,7 @@ public class RoomRepository : IRoomRepository
             .Distinct()
             .ToListAsync(ct);
 
-        var query = _context.Rooms
+        var query = DbSet
             .Where(r => r.Status == RoomStatus.Available && !occupiedRoomIds.Contains(r.Id));
 
         if (type.HasValue)
@@ -49,10 +41,4 @@ public class RoomRepository : IRoomRepository
 
         return await query.ToListAsync(ct);
     }
-
-    public async Task AddAsync(Room room, CancellationToken ct = default)
-        => await _context.Rooms.AddAsync(room, ct);
-
-    public void Update(Room room)
-        => _context.Rooms.Update(room);
 }

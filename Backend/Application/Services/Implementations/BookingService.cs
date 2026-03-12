@@ -1,8 +1,11 @@
-﻿using Alti.Domain.Interfaces;
+﻿using Alti.Domain.Exceptions;
 using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Alti.Domain.Exceptions;
+using Application.Dtos.Booking;
 using Application.DTOs.Booking;
+using Application.Interfaces;
+using Application.Mappers;
 using Application.Services.Interfaces;
 using Infrastructure.Services.Interfaces;
 
@@ -35,27 +38,29 @@ public class BookingService : IBookingService
         var booking = await _uow.Bookings.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Booking {id} not found.");
 
-        return MapToResponse(booking);
+        return BookingMapper.ToDto(booking);
     }
 
     public async Task<BookingResponseDto> GetByCodeAsync(string code, CancellationToken ct = default)
     {
         var booking = await _uow.Bookings.GetByCodeAsync(code, ct)
-            ?? throw new KeyNotFoundException($"Booking with code {code} not found.");
+            ?? throw new KeyNotFoundException($"Booking {code} not found.");
 
-        return MapToResponse(booking);
+        return BookingMapper.ToDto(booking);
     }
 
-    public async Task<IReadOnlyList<BookingResponseDto>> GetByGuestAsync(int guestId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<BookingResponseDto>> GetByGuestAsync(
+        int guestId, int page, int pageSize, CancellationToken ct = default)
     {
-        var bookings = await _uow.Bookings.GetByGuestAsync(guestId, ct);
-        return bookings.Select(MapToResponse).ToList();
+        var bookings = await _uow.Bookings.GetByGuestAsync(guestId, page, pageSize, ct);
+        return bookings.Select(BookingMapper.ToDto).ToList();
     }
 
-    public async Task<IReadOnlyList<BookingResponseDto>> GetActiveAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<BookingResponseDto>> GetActiveAsync(
+        int page, int pageSize, CancellationToken ct = default)
     {
-        var bookings = await _uow.Bookings.GetActiveAsync(ct);
-        return bookings.Select(MapToResponse).ToList();
+        var bookings = await _uow.Bookings.GetActiveAsync(page, pageSize, ct);
+        return bookings.Select(BookingMapper.ToDto).ToList();
     }
 
     public async Task<BookingResponseDto> CreateAsync(CreateBookingDto dto, CancellationToken ct = default)
@@ -80,20 +85,15 @@ public class BookingService : IBookingService
 
             var code = _codeGenerator.GenerateBookingCode();
             var booking = _factory.Create(
-                code,
-                dto.GuestId,
-                dto.RoomId,
-                dto.CheckInDate,
-                dto.CheckOutDate,
-                pricePerNight,
-                dto.AttendedById,
-                dto.Notes);
+                code, dto.GuestId, dto.RoomId,
+                dto.CheckInDate, dto.CheckOutDate,
+                pricePerNight, dto.AttendedById, dto.Notes);
 
             await _uow.Bookings.AddAsync(booking, ct);
             await _uow.SaveChangesAsync(ct);
             await _uow.CommitTransactionAsync(ct);
 
-            return MapToResponse(booking);
+            return BookingMapper.ToDto(booking);
         }
         catch
         {
@@ -129,7 +129,6 @@ public class BookingService : IBookingService
         {
             _domainService.RegisterCheckIn(booking, receptionistId);
             _roomDomainService.MarkAsOccupied(room);
-
             _uow.Bookings.Update(booking);
             _uow.Rooms.Update(room);
             await _uow.SaveChangesAsync(ct);
@@ -156,7 +155,6 @@ public class BookingService : IBookingService
         {
             _domainService.RegisterCheckOut(booking);
             _roomDomainService.SendToCleaning(room);
-
             _uow.Bookings.Update(booking);
             _uow.Rooms.Update(room);
             await _uow.SaveChangesAsync(ct);
@@ -183,7 +181,6 @@ public class BookingService : IBookingService
         {
             _domainService.Cancel(booking);
             _roomDomainService.ReleaseBlock(room);
-
             _uow.Bookings.Update(booking);
             _uow.Rooms.Update(room);
             await _uow.SaveChangesAsync(ct);
@@ -195,23 +192,4 @@ public class BookingService : IBookingService
             throw;
         }
     }
-
-    private static BookingResponseDto MapToResponse(Alti.Domain.Entities.Booking booking) => new()
-    {
-        Id = booking.Id,
-        Code = booking.Code,
-        GuestId = booking.GuestId,
-        GuestFullName = string.Empty,
-        RoomId = booking.RoomId,
-        RoomNumber = string.Empty,
-        CheckInDate = booking.CheckInDate,
-        CheckOutDate = booking.CheckOutDate,
-        Nights = booking.CheckOutDate.DayNumber - booking.CheckInDate.DayNumber,
-        PricePerNight = booking.PricePerNight,
-        TotalPrice = booking.TotalPrice,
-        Status = booking.Status,
-        ExpiresAt = booking.ExpiresAt,
-        Notes = booking.Notes,
-        CreatedAt = booking.CreatedAt
-    };
 }

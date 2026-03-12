@@ -1,32 +1,31 @@
-using Alti.Infrastructure;
-using Alti.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using IOC;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddInfrastructureServices();
-
-builder.Services.AddDbContext<HotelDbContext>(options =>
-    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Alti.Infrastructure")));
-
-
-builder.Services.AddScoped<ICurrentUserService, DummyCurrentUserService>();
+builder.Services.AddAllServices(builder.Configuration);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.MapGet("/health", async (Persistence.Context.AppDbContext db) =>
+{
+    var canConnect = await db.Database.CanConnectAsync();
+    return canConnect
+        ? Results.Ok("Database connection successful.")
+        : Results.Problem("Cannot connect to database.");
+});
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
 app.Run();
-
-public class DummyCurrentUserService : ICurrentUserService
-{
-    public int? UsuarioId => 1;
-}

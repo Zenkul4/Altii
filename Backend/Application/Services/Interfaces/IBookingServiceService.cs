@@ -1,4 +1,5 @@
-﻿using Application.DTOs.BookingService;
+﻿using Application.Dtos.BookingService;
+using Application.DTOs.BookingService;
 
 namespace Application.Services.Interfaces;
 
