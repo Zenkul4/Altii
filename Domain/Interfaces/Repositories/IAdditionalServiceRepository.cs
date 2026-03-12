@@ -2,10 +2,7 @@
 
 namespace Alti.Domain.Interfaces.Repositories;
 
-public interface IAdditionalServiceRepository
+public interface IAdditionalServiceRepository : IBaseRepository<AdditionalService>
 {
-    Task<AdditionalService?> GetByIdAsync(int id, CancellationToken ct = default);
     Task<IReadOnlyList<AdditionalService>> GetAllActiveAsync(CancellationToken ct = default);
-    Task AddAsync(AdditionalService service, CancellationToken ct = default);
-    void Update(AdditionalService service);
 }
