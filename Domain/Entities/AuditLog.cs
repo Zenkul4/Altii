@@ -4,7 +4,7 @@ namespace Alti.Domain.Entities;
 
 public class AuditLog
 {
-    public AuditLog() { }
+    private AuditLog() { }
 
     public long Id { get; internal set; }
     public int? UserId { get; internal set; }

@@ -21,7 +21,7 @@ public class RateService : IRateService
 
     public async Task<RateResponseDto> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        var rate = await _uow.Rates.GetBySeasonAndTypeAsync(id, default, ct)
+        var rate = await _uow.Rates.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Rate {id} not found.");
 
         return MapToResponse(rate);
@@ -45,7 +45,7 @@ public class RateService : IRateService
 
     public async Task<RateResponseDto> UpdateAsync(int id, UpdateRateDto dto, CancellationToken ct = default)
     {
-        var rate = await _uow.Rates.GetBySeasonAndTypeAsync(id, default, ct)
+        var rate = await _uow.Rates.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Rate {id} not found.");
 
         _domainService.UpdatePrice(rate, dto.PricePerNight);

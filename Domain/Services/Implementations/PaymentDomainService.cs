@@ -9,7 +9,7 @@ public class PaymentDomainService : IPaymentDomainService
     public void Approve(Payment payment, string externalReference)
     {
         if (string.IsNullOrWhiteSpace(externalReference))
-            throw new ArgumentException("External reference is required when approving.", nameof(externalReference));
+            throw new ArgumentException("External reference is required.", nameof(externalReference));
 
         payment.Status = PaymentStatus.Approved;
         payment.ExternalReference = externalReference.Trim();

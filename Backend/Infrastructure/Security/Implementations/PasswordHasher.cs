@@ -1,5 +1,4 @@
-﻿using Infrastructure.Security.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using Application.Interfaces;
 
 namespace Infrastructure.Security.Implementations;
 

@@ -15,6 +15,9 @@ public class RateRepository : IRateRepository
         _context = context;
     }
 
+    public async Task<Rate?> GetByIdAsync(int id, CancellationToken ct = default)
+        => await _context.Rates.FirstOrDefaultAsync(r => r.Id == id, ct);
+
     public async Task<Rate?> GetBySeasonAndTypeAsync(int seasonId, RoomType roomType, CancellationToken ct = default)
         => await _context.Rates.FirstOrDefaultAsync(r => r.SeasonId == seasonId && r.RoomType == roomType, ct);
 
