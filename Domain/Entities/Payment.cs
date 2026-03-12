@@ -5,7 +5,7 @@ namespace Alti.Domain.Entities;
 
 public class Payment : BaseEntity
 {
-    private Payment() { }
+    internal Payment() { }
 
     public int BookingId { get; internal set; }
     public decimal Amount { get; internal set; }
