@@ -24,7 +24,8 @@ public class AuditLogRepository : IAuditLogRepository
             .OrderByDescending(a => a.ExecutedAt)
             .ToListAsync(ct);
 
-    public async Task<IReadOnlyList<AuditLog>> GetByEntityAsync(AuditEntity entity, int entityId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<AuditLog>> GetByEntityAsync(
+        AuditEntity entity, int entityId, CancellationToken ct = default)
         => await _context.AuditLogs
             .Where(a => a.Entity == entity && a.EntityId == entityId)
             .OrderByDescending(a => a.ExecutedAt)
