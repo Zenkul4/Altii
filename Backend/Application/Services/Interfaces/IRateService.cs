@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Rate;
+﻿using Application.Dtos.Rate;
 
 namespace Application.Services.Interfaces;
 

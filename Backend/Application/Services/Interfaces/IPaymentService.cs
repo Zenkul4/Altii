@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Payment;
+﻿using Application.Dtos.Payment;
 
 namespace Application.Services.Interfaces;
 

@@ -1,7 +1,8 @@
-﻿using Alti.Domain.Interfaces;
-using Alti.Domain.Factories.Interfaces;
+﻿using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Application.DTOs.AdditionalService;
+using Application.Dtos.AdditionalService;
+using Application.Mappers;
 using Application.Services.Interfaces;
 
 namespace Application.Services.Implementations;
@@ -27,13 +28,13 @@ public class AdditionalServiceService : IAdditionalServiceService
         var service = await _uow.AdditionalServices.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Service {id} not found.");
 
-        return MapToResponse(service);
+        return AdditionalServiceMapper.ToDto(service);
     }
 
     public async Task<IReadOnlyList<AdditionalServiceResponseDto>> GetAllActiveAsync(CancellationToken ct = default)
     {
         var services = await _uow.AdditionalServices.GetAllActiveAsync(ct);
-        return services.Select(MapToResponse).ToList();
+        return services.Select(AdditionalServiceMapper.ToDto).ToList();
     }
 
     public async Task<AdditionalServiceResponseDto> CreateAsync(CreateAdditionalServiceDto dto, CancellationToken ct = default)
@@ -43,7 +44,7 @@ public class AdditionalServiceService : IAdditionalServiceService
         await _uow.AdditionalServices.AddAsync(service, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(service);
+        return AdditionalServiceMapper.ToDto(service);
     }
 
     public async Task<AdditionalServiceResponseDto> UpdateAsync(int id, UpdateAdditionalServiceDto dto, CancellationToken ct = default)
@@ -56,7 +57,7 @@ public class AdditionalServiceService : IAdditionalServiceService
         _uow.AdditionalServices.Update(service);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(service);
+        return AdditionalServiceMapper.ToDto(service);
     }
 
     public async Task DeactivateAsync(int id, CancellationToken ct = default)
@@ -78,13 +79,4 @@ public class AdditionalServiceService : IAdditionalServiceService
         _uow.AdditionalServices.Update(service);
         await _uow.SaveChangesAsync(ct);
     }
-
-    private static AdditionalServiceResponseDto MapToResponse(Alti.Domain.Entities.AdditionalService service) => new()
-    {
-        Id = service.Id,
-        Name = service.Name,
-        Description = service.Description,
-        Price = service.Price,
-        IsActive = service.IsActive
-    };
 }

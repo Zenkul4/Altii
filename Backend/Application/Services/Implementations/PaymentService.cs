@@ -1,7 +1,8 @@
-﻿using Alti.Domain.Interfaces;
-using Alti.Domain.Factories.Interfaces;
+﻿using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Application.DTOs.Payment;
+using Application.Dtos.Payment;
+using Application.Mappers;
 using Application.Services.Interfaces;
 
 namespace Application.Services.Implementations;
@@ -24,13 +25,13 @@ public class PaymentService : IPaymentService
         var payment = await _uow.Payments.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Payment {id} not found.");
 
-        return MapToResponse(payment);
+        return PaymentMapper.ToDto(payment);
     }
 
     public async Task<IReadOnlyList<PaymentResponseDto>> GetByBookingAsync(int bookingId, CancellationToken ct = default)
     {
         var payments = await _uow.Payments.GetByBookingAsync(bookingId, ct);
-        return payments.Select(MapToResponse).ToList();
+        return payments.Select(PaymentMapper.ToDto).ToList();
     }
 
     public async Task<PaymentResponseDto> CreateAsync(CreatePaymentDto dto, CancellationToken ct = default)
@@ -40,7 +41,7 @@ public class PaymentService : IPaymentService
         await _uow.Payments.AddAsync(payment, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(payment);
+        return PaymentMapper.ToDto(payment);
     }
 
     public async Task<PaymentResponseDto> ApproveAsync(int id, string externalReference, CancellationToken ct = default)
@@ -52,7 +53,7 @@ public class PaymentService : IPaymentService
         _uow.Payments.Update(payment);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(payment);
+        return PaymentMapper.ToDto(payment);
     }
 
     public async Task<PaymentResponseDto> RejectAsync(int id, CancellationToken ct = default)
@@ -64,7 +65,7 @@ public class PaymentService : IPaymentService
         _uow.Payments.Update(payment);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(payment);
+        return PaymentMapper.ToDto(payment);
     }
 
     public async Task<PaymentResponseDto> RefundAsync(int id, CancellationToken ct = default)
@@ -76,18 +77,6 @@ public class PaymentService : IPaymentService
         _uow.Payments.Update(payment);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(payment);
+        return PaymentMapper.ToDto(payment);
     }
-
-    private static PaymentResponseDto MapToResponse(Alti.Domain.Entities.Payment payment) => new()
-    {
-        Id = payment.Id,
-        BookingId = payment.BookingId,
-        Amount = payment.Amount,
-        Status = payment.Status,
-        ExternalReference = payment.ExternalReference,
-        PaymentMethod = payment.PaymentMethod,
-        ProcessedAt = payment.ProcessedAt,
-        CreatedAt = payment.CreatedAt
-    };
 }

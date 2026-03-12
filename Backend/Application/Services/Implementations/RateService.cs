@@ -1,7 +1,8 @@
-﻿using Alti.Domain.Interfaces;
-using Alti.Domain.Factories.Interfaces;
+﻿using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Application.DTOs.Rate;
+using Application.Dtos.Rate;
+using Application.Mappers;
 using Application.Services.Interfaces;
 
 namespace Application.Services.Implementations;
@@ -24,13 +25,13 @@ public class RateService : IRateService
         var rate = await _uow.Rates.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Rate {id} not found.");
 
-        return MapToResponse(rate);
+        return RateMapper.ToDto(rate);
     }
 
     public async Task<IReadOnlyList<RateResponseDto>> GetBySeasonAsync(int seasonId, CancellationToken ct = default)
     {
         var rates = await _uow.Rates.GetBySeasonAsync(seasonId, ct);
-        return rates.Select(MapToResponse).ToList();
+        return rates.Select(RateMapper.ToDto).ToList();
     }
 
     public async Task<RateResponseDto> CreateAsync(CreateRateDto dto, int createdById, CancellationToken ct = default)
@@ -40,7 +41,7 @@ public class RateService : IRateService
         await _uow.Rates.AddAsync(rate, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(rate);
+        return RateMapper.ToDto(rate);
     }
 
     public async Task<RateResponseDto> UpdateAsync(int id, UpdateRateDto dto, CancellationToken ct = default)
@@ -52,16 +53,6 @@ public class RateService : IRateService
         _uow.Rates.Update(rate);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(rate);
+        return RateMapper.ToDto(rate);
     }
-
-    private static RateResponseDto MapToResponse(Alti.Domain.Entities.Rate rate) => new()
-    {
-        Id = rate.Id,
-        SeasonId = rate.SeasonId,
-        RoomType = rate.RoomType,
-        PricePerNight = rate.PricePerNight,
-        CreatedById = rate.CreatedById,
-        CreatedAt = rate.CreatedAt
-    };
 }
