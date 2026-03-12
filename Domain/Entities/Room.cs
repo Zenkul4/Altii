@@ -5,7 +5,7 @@ namespace Alti.Domain.Entities;
 
 public class Room : BaseEntity
 {
-    public Room() { }
+    internal Room() { }
 
     public string Number { get; internal set; } = string.Empty;
     public RoomType Type { get; internal set; }

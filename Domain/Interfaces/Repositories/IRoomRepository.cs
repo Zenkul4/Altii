@@ -3,9 +3,8 @@ using Alti.Domain.Enums;
 
 namespace Alti.Domain.Interfaces.Repositories;
 
-public interface IRoomRepository
+public interface IRoomRepository : IBaseRepository<Room>
 {
-    Task<Room?> GetByIdAsync(int id, CancellationToken ct = default);
     Task<Room?> GetByNumberAsync(string number, CancellationToken ct = default);
     Task<IReadOnlyList<Room>> GetAvailableAsync(
         DateOnly checkInDate,
@@ -13,6 +12,4 @@ public interface IRoomRepository
         RoomType? type = null,
         short? minCapacity = null,
         CancellationToken ct = default);
-    Task AddAsync(Room room, CancellationToken ct = default);
-    void Update(Room room);
 }

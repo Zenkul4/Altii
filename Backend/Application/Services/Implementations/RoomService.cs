@@ -1,8 +1,10 @@
 ﻿using Alti.Domain.Enums;
-using Alti.Domain.Interfaces;
 using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
+using Application.Dtos.Room;
 using Application.DTOs.Room;
+using Application.Mappers;
 using Application.Services.Interfaces;
 
 namespace Application.Services.Implementations;
@@ -25,7 +27,7 @@ public class RoomService : IRoomService
         var room = await _uow.Rooms.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Room {id} not found.");
 
-        return MapToResponse(room);
+        return RoomMapper.ToDto(room);
     }
 
     public async Task<IReadOnlyList<RoomResponseDto>> GetAvailableAsync(
@@ -36,7 +38,7 @@ public class RoomService : IRoomService
         CancellationToken ct = default)
     {
         var rooms = await _uow.Rooms.GetAvailableAsync(checkIn, checkOut, type, minCapacity, ct);
-        return rooms.Select(MapToResponse).ToList();
+        return rooms.Select(RoomMapper.ToDto).ToList();
     }
 
     public async Task<RoomResponseDto> CreateAsync(CreateRoomDto dto, CancellationToken ct = default)
@@ -46,7 +48,7 @@ public class RoomService : IRoomService
         await _uow.Rooms.AddAsync(room, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(room);
+        return RoomMapper.ToDto(room);
     }
 
     public async Task<RoomResponseDto> UpdateAsync(int id, UpdateRoomDto dto, CancellationToken ct = default)
@@ -58,7 +60,7 @@ public class RoomService : IRoomService
         _uow.Rooms.Update(room);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(room);
+        return RoomMapper.ToDto(room);
     }
 
     public async Task DisableAsync(int id, CancellationToken ct = default)
@@ -80,17 +82,4 @@ public class RoomService : IRoomService
         _uow.Rooms.Update(room);
         await _uow.SaveChangesAsync(ct);
     }
-
-    private static RoomResponseDto MapToResponse(Alti.Domain.Entities.Room room) => new()
-    {
-        Id = room.Id,
-        Number = room.Number,
-        Type = room.Type,
-        Floor = room.Floor,
-        Capacity = room.Capacity,
-        BasePrice = room.BasePrice,
-        Description = room.Description,
-        Status = room.Status,
-        CreatedAt = room.CreatedAt
-    };
 }

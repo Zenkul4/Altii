@@ -5,7 +5,7 @@ namespace Alti.Domain.Entities;
 
 public class User : BaseEntity
 {
-    public User() { }
+    internal User() { }
 
     public string FirstName { get; internal set; } = string.Empty;
     public string LastName { get; internal set; } = string.Empty;

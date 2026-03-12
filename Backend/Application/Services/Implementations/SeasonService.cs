@@ -1,8 +1,10 @@
-﻿using Alti.Domain.Interfaces;
+﻿using Alti.Domain.Exceptions;
 using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Alti.Domain.Exceptions;
+using Application.Dtos.Season;
 using Application.DTOs.Season;
+using Application.Mappers;
 using Application.Services.Interfaces;
 
 namespace Application.Services.Implementations;
@@ -25,13 +27,13 @@ public class SeasonService : ISeasonService
         var season = await _uow.Seasons.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Season {id} not found.");
 
-        return MapToResponse(season);
+        return SeasonMapper.ToDto(season);
     }
 
     public async Task<IReadOnlyList<SeasonResponseDto>> GetAllAsync(CancellationToken ct = default)
     {
         var seasons = await _uow.Seasons.GetAllAsync(ct);
-        return seasons.Select(MapToResponse).ToList();
+        return seasons.Select(SeasonMapper.ToDto).ToList();
     }
 
     public async Task<SeasonResponseDto> CreateAsync(CreateSeasonDto dto, int createdById, CancellationToken ct = default)
@@ -44,7 +46,7 @@ public class SeasonService : ISeasonService
         await _uow.Seasons.AddAsync(season, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(season);
+        return SeasonMapper.ToDto(season);
     }
 
     public async Task<SeasonResponseDto> UpdateAsync(int id, UpdateSeasonDto dto, CancellationToken ct = default)
@@ -59,18 +61,6 @@ public class SeasonService : ISeasonService
         _uow.Seasons.Update(season);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(season);
+        return SeasonMapper.ToDto(season);
     }
-
-    private static SeasonResponseDto MapToResponse(Alti.Domain.Entities.Season season) => new()
-    {
-        Id = season.Id,
-        Name = season.Name,
-        StartDate = season.StartDate,
-        EndDate = season.EndDate,
-        Multiplier = season.Multiplier,
-        Description = season.Description,
-        CreatedById = season.CreatedById,
-        CreatedAt = season.CreatedAt
-    };
 }

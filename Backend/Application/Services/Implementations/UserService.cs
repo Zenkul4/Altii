@@ -1,8 +1,11 @@
-﻿using Alti.Domain.Interfaces;
+﻿using Alti.Domain.Exceptions;
 using Alti.Domain.Factories.Interfaces;
+using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Alti.Domain.Exceptions;
+using Application.Dtos.User;
 using Application.DTOs.User;
+using Application.Interfaces;
+using Application.Mappers;
 using Application.Services.Interfaces;
 using Infrastructure.Security.Interfaces;
 
@@ -32,13 +35,13 @@ public class UserService : IUserService
         var user = await _uow.Users.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"User {id} not found.");
 
-        return MapToResponse(user);
+        return UserMapper.ToDto(user);
     }
 
     public async Task<IReadOnlyList<UserResponseDto>> GetAllAsync(CancellationToken ct = default)
     {
         var users = await _uow.Users.GetByRoleAsync(Alti.Domain.Enums.UserRole.Guest, ct);
-        return users.Select(MapToResponse).ToList();
+        return users.Select(UserMapper.ToDto).ToList();
     }
 
     public async Task<UserResponseDto> CreateAsync(CreateUserDto dto, CancellationToken ct = default)
@@ -52,7 +55,7 @@ public class UserService : IUserService
         await _uow.Users.AddAsync(user, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(user);
+        return UserMapper.ToDto(user);
     }
 
     public async Task<UserResponseDto> UpdateAsync(int id, UpdateUserDto dto, CancellationToken ct = default)
@@ -64,7 +67,7 @@ public class UserService : IUserService
         _uow.Users.Update(user);
         await _uow.SaveChangesAsync(ct);
 
-        return MapToResponse(user);
+        return UserMapper.ToDto(user);
     }
 
     public async Task DeactivateAsync(int id, CancellationToken ct = default)
@@ -86,17 +89,4 @@ public class UserService : IUserService
         _uow.Users.Update(user);
         await _uow.SaveChangesAsync(ct);
     }
-
-    private static UserResponseDto MapToResponse(Alti.Domain.Entities.User user) => new()
-    {
-        Id = user.Id,
-        FirstName = user.FirstName,
-        LastName = user.LastName,
-        FullName = $"{user.FirstName} {user.LastName}",
-        Email = user.Email,
-        Phone = user.Phone,
-        Role = user.Role,
-        IsActive = user.IsActive,
-        CreatedAt = user.CreatedAt
-    };
 }

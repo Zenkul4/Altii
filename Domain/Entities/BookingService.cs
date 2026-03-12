@@ -1,11 +1,8 @@
-﻿using Alti.Domain.Common;
-using System;
-using System.Collections.Generic;
-namespace Alti.Domain.Entities;
+﻿namespace Alti.Domain.Entities;
 
 public class BookingService
 {
-    public BookingService() { }
+    internal BookingService() { }
 
     public int Id { get; internal set; }
     public int BookingId { get; internal set; }
