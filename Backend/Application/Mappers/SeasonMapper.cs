@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Application.Dtos.Season;
 using Application.DTOs.Season;
 
 namespace Application.Mappers;

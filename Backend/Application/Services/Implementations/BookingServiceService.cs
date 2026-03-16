@@ -1,6 +1,5 @@
 ﻿using Alti.Domain.Factories.Interfaces;
 using Alti.Domain.Interfaces;
-using Application.Dtos.BookingService;
 using Application.DTOs.BookingService;
 using Application.Mappers;
 using Application.Services.Interfaces;

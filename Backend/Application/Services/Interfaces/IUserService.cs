@@ -1,4 +1,5 @@
-﻿using Application.DTOs.User;
+﻿using Application.Dtos.User;
+using Application.DTOs.User;
 
 namespace Application.Services.Interfaces;
 

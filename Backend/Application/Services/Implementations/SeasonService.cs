@@ -2,7 +2,6 @@
 using Alti.Domain.Factories.Interfaces;
 using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Application.Dtos.Season;
 using Application.DTOs.Season;
 using Application.Mappers;
 using Application.Services.Interfaces;
