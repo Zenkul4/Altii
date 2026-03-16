@@ -1,5 +1,4 @@
-﻿using Application.Dtos.Room;
-using Application.DTOs.Room;
+﻿using Application.DTOs.Room;
 using FluentValidation;
 
 namespace Application.Validators;

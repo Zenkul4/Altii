@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Application.Dtos.Booking;
 using Application.DTOs.Booking;
 
 namespace Application.Mappers;

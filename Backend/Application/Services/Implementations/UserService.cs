@@ -7,7 +7,6 @@ using Application.DTOs.User;
 using Application.Interfaces;
 using Application.Mappers;
 using Application.Services.Interfaces;
-using Infrastructure.Security.Interfaces;
 
 namespace Application.Services.Implementations;
 

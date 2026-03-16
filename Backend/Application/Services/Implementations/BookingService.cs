@@ -2,12 +2,10 @@
 using Alti.Domain.Factories.Interfaces;
 using Alti.Domain.Interfaces;
 using Alti.Domain.Services.Interfaces;
-using Application.Dtos.Booking;
 using Application.DTOs.Booking;
 using Application.Interfaces;
 using Application.Mappers;
 using Application.Services.Interfaces;
-using Infrastructure.Services.Interfaces;
 
 namespace Application.Services.Implementations;
 

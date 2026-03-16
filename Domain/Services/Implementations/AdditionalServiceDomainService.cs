@@ -14,6 +14,16 @@ public class AdditionalServiceDomainService : IAdditionalServiceDomainService
         service.UpdatedAt = DateTimeOffset.UtcNow;
     }
 
+    public void UpdateDetails(AdditionalService service, decimal newPrice, string? newDescription)
+    {
+        if (newPrice < 0)
+            throw new ArgumentException("Price cannot be negative.", nameof(newPrice));
+
+        service.Price = newPrice;
+        service.Description = newDescription?.Trim();
+        service.UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
     public void Deactivate(AdditionalService service)
     {
         service.IsActive = false;

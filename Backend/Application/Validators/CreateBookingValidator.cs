@@ -1,5 +1,4 @@
-﻿using Application.Dtos.Booking;
-using Application.DTOs.Booking;
+﻿using Application.DTOs.Booking;
 using FluentValidation;
 
 namespace Application.Validators;

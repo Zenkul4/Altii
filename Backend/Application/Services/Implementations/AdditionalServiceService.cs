@@ -52,8 +52,7 @@ public class AdditionalServiceService : IAdditionalServiceService
         var service = await _uow.AdditionalServices.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Service {id} not found.");
 
-        _domainService.UpdatePrice(service, dto.Price);
-        service.Description = dto.Description;
+        _domainService.UpdateDetails(service, dto.Price, dto.Description);
         _uow.AdditionalServices.Update(service);
         await _uow.SaveChangesAsync(ct);
 

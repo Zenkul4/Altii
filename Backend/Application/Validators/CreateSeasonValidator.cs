@@ -1,5 +1,4 @@
-﻿using Application.Dtos.Season;
-using Application.DTOs.Season;
+﻿using Application.DTOs.Season;
 using FluentValidation;
 
 namespace Application.Validators;

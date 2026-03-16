@@ -1,5 +1,4 @@
 ﻿using Alti.Domain.Entities;
-using Application.Dtos.Room;
 using Application.DTOs.Room;
 
 namespace Application.Mappers;
