@@ -25,16 +25,12 @@ public class RoomService : IRoomService
     {
         var room = await _uow.Rooms.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Room {id} not found.");
-
         return RoomMapper.ToDto(room);
     }
 
     public async Task<IReadOnlyList<RoomResponseDto>> GetAvailableAsync(
-        DateOnly checkIn,
-        DateOnly checkOut,
-        RoomType? type = null,
-        short? minCapacity = null,
-        CancellationToken ct = default)
+        DateOnly checkIn, DateOnly checkOut, RoomType? type = null,
+        short? minCapacity = null, CancellationToken ct = default)
     {
         var rooms = await _uow.Rooms.GetAvailableAsync(checkIn, checkOut, type, minCapacity, ct);
         return rooms.Select(RoomMapper.ToDto).ToList();
@@ -43,10 +39,8 @@ public class RoomService : IRoomService
     public async Task<RoomResponseDto> CreateAsync(CreateRoomDto dto, CancellationToken ct = default)
     {
         var room = _factory.Create(dto.Number, dto.Type, dto.Floor, dto.Capacity, dto.BasePrice, dto.Description);
-
         await _uow.Rooms.AddAsync(room, ct);
         await _uow.SaveChangesAsync(ct);
-
         return RoomMapper.ToDto(room);
     }
 
@@ -54,11 +48,9 @@ public class RoomService : IRoomService
     {
         var room = await _uow.Rooms.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Room {id} not found.");
-
         _domainService.UpdateDetails(room, dto.BasePrice, dto.Description);
         _uow.Rooms.Update(room);
         await _uow.SaveChangesAsync(ct);
-
         return RoomMapper.ToDto(room);
     }
 
@@ -66,7 +58,6 @@ public class RoomService : IRoomService
     {
         var room = await _uow.Rooms.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Room {id} not found.");
-
         _domainService.Disable(room);
         _uow.Rooms.Update(room);
         await _uow.SaveChangesAsync(ct);
@@ -76,8 +67,16 @@ public class RoomService : IRoomService
     {
         var room = await _uow.Rooms.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Room {id} not found.");
-
         _domainService.Enable(room);
+        _uow.Rooms.Update(room);
+        await _uow.SaveChangesAsync(ct);
+    }
+
+    public async Task MarkAsAvailableAsync(int id, CancellationToken ct = default)
+    {
+        var room = await _uow.Rooms.GetByIdAsync(id, ct)
+            ?? throw new KeyNotFoundException($"Room {id} not found.");
+        _domainService.MarkAsAvailable(room);
         _uow.Rooms.Update(room);
         await _uow.SaveChangesAsync(ct);
     }

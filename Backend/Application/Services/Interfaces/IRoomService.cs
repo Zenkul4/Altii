@@ -11,4 +11,5 @@ public interface IRoomService
     Task<RoomResponseDto> UpdateAsync(int id, UpdateRoomDto dto, CancellationToken ct = default);
     Task DisableAsync(int id, CancellationToken ct = default);
     Task EnableAsync(int id, CancellationToken ct = default);
+    Task MarkAsAvailableAsync(int id, CancellationToken ct = default);
 }
