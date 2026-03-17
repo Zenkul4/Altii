@@ -1,3 +1,4 @@
+using Alti.Domain.Exceptions;
 using IOC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,59 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var error = context.Features
+            .Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+
+        if (error?.Error is KeyNotFoundException)
+        {
+            context.Response.StatusCode = 404;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Not Found",
+                message = error.Error.Message
+            });
+            return;
+        }
+
+        if (error?.Error is DomainException)
+        {
+            context.Response.StatusCode = 422;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Business Rule Violation",
+                message = error.Error.Message
+            });
+            return;
+        }
+
+        if (error?.Error is ArgumentException)
+        {
+            context.Response.StatusCode = 400;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Bad Request",
+                message = error.Error.Message
+            });
+            return;
+        }
+
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            error = "Internal Server Error",
+            message = "An unexpected error occurred."
+        });
+    });
+});
 
 app.MapGet("/health", async (Persistence.Context.AppDbContext db) =>
 {

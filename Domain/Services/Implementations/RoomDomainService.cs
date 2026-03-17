@@ -63,8 +63,8 @@ public class RoomDomainService : IRoomDomainService
 
     public void Enable(Room room)
     {
-        if (room.Status != RoomStatus.Inactive)
-            throw new InvalidOperationException($"Room {room.Number} is not inactive.");
+        if (room.Status == RoomStatus.Occupied)
+            throw new InvalidOperationException($"Room {room.Number} cannot be enabled while occupied.");
 
         room.Status = RoomStatus.Available;
         room.UpdatedAt = DateTimeOffset.UtcNow;

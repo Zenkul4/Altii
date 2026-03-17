@@ -62,4 +62,11 @@ public class RoomsController : ControllerBase
         await _roomService.EnableAsync(id, ct);
         return NoContent();
     }
+
+    [HttpPatch("{id}/mark-available")]
+    public async Task<IActionResult> MarkAsAvailable(int id, CancellationToken ct)
+    {
+        await _roomService.MarkAsAvailableAsync(id, ct);
+        return NoContent();
+    }
 }
