@@ -7,7 +7,10 @@ using Persistence.Context;
 namespace Persistence.Repositories.Implementations;
 
 public class UserRepository : BaseRepository<User>, IUserRepository
+
 {
+    public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default)
+    => await DbSet.Where(u => u.IsActive).ToListAsync(ct);
     public UserRepository(AppDbContext context) : base(context) { }
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
