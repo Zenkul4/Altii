@@ -10,9 +10,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new()
     {
-        Title = "ALTI Hotel — Desktop API",
+        Title = "ALTI Hotel — API",
         Version = "v1",
-        Description = "API para el sistema de gestión interno del hotel"
+        Description = "API unificada para el sistema de gestión hotelero"
     });
 });
 
@@ -20,7 +20,7 @@ builder.Services.AddAllServices(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DesktopPolicy", policy =>
+    options.AddPolicy("AllPolicy", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
@@ -50,6 +50,18 @@ app.UseExceptionHandler(errorApp =>
             await context.Response.WriteAsJsonAsync(new
             {
                 error = "Not Found",
+                message = error.Error.Message
+            });
+            return;
+        }
+
+        if (error?.Error is UnauthorizedAccessException)
+        {
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Unauthorized",
                 message = error.Error.Message
             });
             return;
@@ -122,7 +134,7 @@ app.MapGet("/health", async (Persistence.Context.AppDbContext db) =>
         : Results.Problem("Cannot connect to database.");
 });
 
-app.UseCors("DesktopPolicy");
+app.UseCors("AllPolicy");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
