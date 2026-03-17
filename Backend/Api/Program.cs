@@ -1,5 +1,6 @@
 using Alti.Domain.Exceptions;
 using IOC;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,31 @@ app.UseExceptionHandler(errorApp =>
             {
                 error = "Bad Request",
                 message = error.Error.Message
+            });
+            return;
+        }
+
+        if (error?.Error is DbUpdateException dbEx)
+        {
+            context.Response.StatusCode = 409;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Conflict",
+                message = "A record with the same key already exists.",
+                detail = dbEx.InnerException?.Message ?? dbEx.Message
+            });
+            return;
+        }
+
+        if (error?.Error is InvalidOperationException invEx)
+        {
+            context.Response.StatusCode = 422;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Business Rule Violation",
+                message = invEx.Message
             });
             return;
         }
