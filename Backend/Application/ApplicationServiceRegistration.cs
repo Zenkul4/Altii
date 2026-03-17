@@ -18,6 +18,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IAdditionalServiceService, AdditionalServiceService>();
         services.AddScoped<IBookingServiceService, BookingServiceService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
 

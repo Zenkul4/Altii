@@ -2,7 +2,7 @@
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Desktop.Controllers;
+namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

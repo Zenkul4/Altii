@@ -3,7 +3,7 @@ using Application.Services.Interfaces;
 using Alti.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Desktop.Controllers;
+namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
