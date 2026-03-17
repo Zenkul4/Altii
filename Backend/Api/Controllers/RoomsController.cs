@@ -1,6 +1,6 @@
-﻿using Application.DTOs.Room;
+﻿using Alti.Domain.Enums;
+using Application.DTOs.Room;
 using Application.Services.Interfaces;
-using Alti.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
