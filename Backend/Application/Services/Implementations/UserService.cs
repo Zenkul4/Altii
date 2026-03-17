@@ -39,10 +39,9 @@ public class UserService : IUserService
 
     public async Task<IReadOnlyList<UserResponseDto>> GetAllAsync(CancellationToken ct = default)
     {
-        var users = await _uow.Users.GetByRoleAsync(Alti.Domain.Enums.UserRole.Guest, ct);
+        var users = await _uow.Users.GetAllAsync(ct);
         return users.Select(UserMapper.ToDto).ToList();
     }
-
     public async Task<UserResponseDto> CreateAsync(CreateUserDto dto, CancellationToken ct = default)
     {
         if (await _uow.Users.EmailExistsAsync(dto.Email, ct))
