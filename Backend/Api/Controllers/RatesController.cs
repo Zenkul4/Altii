@@ -1,11 +1,13 @@
 ﻿using Application.Dtos.Rate;
 using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class RatesController : ControllerBase
 {
     private readonly IRateService _rateService;

@@ -1,11 +1,13 @@
 ﻿using Application.Dtos.AdditionalService;
 using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+
 public class AdditionalServicesController : ControllerBase
 {
     private readonly IAdditionalServiceService _service;
@@ -30,6 +32,7 @@ public class AdditionalServicesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateAdditionalServiceDto dto, CancellationToken ct)
     {
         var result = await _service.CreateAsync(dto, ct);
@@ -37,6 +40,7 @@ public class AdditionalServicesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateAdditionalServiceDto dto, CancellationToken ct)
     {
         var result = await _service.UpdateAsync(id, dto, ct);
@@ -44,6 +48,7 @@ public class AdditionalServicesController : ControllerBase
     }
 
     [HttpPatch("{id}/deactivate")]
+    [Authorize]
     public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
     {
         await _service.DeactivateAsync(id, ct);
@@ -51,6 +56,7 @@ public class AdditionalServicesController : ControllerBase
     }
 
     [HttpPatch("{id}/activate")]
+    [Authorize]
     public async Task<IActionResult> Activate(int id, CancellationToken ct)
     {
         await _service.ActivateAsync(id, ct);
