@@ -1,11 +1,13 @@
 ﻿using Application.DTOs.Season;
 using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class SeasonsController : ControllerBase
 {
     private readonly ISeasonService _seasonService;

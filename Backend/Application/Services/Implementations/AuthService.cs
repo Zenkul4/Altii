@@ -18,29 +18,34 @@ public class AuthService : IAuthService
     private readonly IUserFactory _factory;
     private readonly IUserDomainService _domainService;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IJwtService _jwt;
 
     public AuthService(
         IUnitOfWork uow,
         IUserFactory factory,
         IUserDomainService domainService,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        IJwtService jwt)
     {
         _uow = uow;
         _factory = factory;
         _domainService = domainService;
         _passwordHasher = passwordHasher;
+        _jwt = jwt;
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginDto dto, CancellationToken ct = default)
     {
-        var user = await _uow.Users.GetByEmailAsync(dto.Email, ct)
-            ?? throw new KeyNotFoundException($"No account found for email '{dto.Email}'.");
+        var user = await _uow.Users.GetByEmailAsync(dto.Email, ct);
+
+        if (user is null || !_passwordHasher.Verify(dto.Password, user.PasswordHash))
+            throw new UnauthorizedAccessException("Credenciales incorrectas.");
 
         if (!user.IsActive)
-            throw new InactiveUserException(user.Id);
+            throw new UnauthorizedAccessException("Credenciales incorrectas.");
 
-        if (!_passwordHasher.Verify(dto.Password, user.PasswordHash))
-            throw new UnauthorizedAccessException("Invalid password.");
+        var token = _jwt.GenerateToken(user);
+        var expires = _jwt.GetExpiration();
 
         return new LoginResponseDto
         {
@@ -48,7 +53,9 @@ public class AuthService : IAuthService
             FullName = $"{user.FirstName} {user.LastName}",
             Email = user.Email,
             Role = user.Role,
-            IsActive = user.IsActive
+            IsActive = user.IsActive,
+            Token = token,
+            ExpiresAt = expires,
         };
     }
 

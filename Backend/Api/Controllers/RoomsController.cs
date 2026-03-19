@@ -1,6 +1,7 @@
 ﻿using Alti.Domain.Enums;
 using Application.DTOs.Room;
 using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -36,6 +37,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateRoomDto dto, CancellationToken ct)
     {
         var result = await _roomService.CreateAsync(dto, ct);
@@ -43,6 +45,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateRoomDto dto, CancellationToken ct)
     {
         var result = await _roomService.UpdateAsync(id, dto, ct);
@@ -50,6 +53,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPatch("{id}/disable")]
+    [Authorize]
     public async Task<IActionResult> Disable(int id, CancellationToken ct)
     {
         await _roomService.DisableAsync(id, ct);
@@ -57,6 +61,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPatch("{id}/enable")]
+    [Authorize]
     public async Task<IActionResult> Enable(int id, CancellationToken ct)
     {
         await _roomService.EnableAsync(id, ct);
@@ -64,6 +69,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPatch("{id}/mark-available")]
+    [Authorize]
     public async Task<IActionResult> MarkAsAvailable(int id, CancellationToken ct)
     {
         await _roomService.MarkAsAvailableAsync(id, ct);
