@@ -7,7 +7,6 @@ import { useTheme } from "../../context/ThemeContext";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import DateRangePicker from "../components/DateRangePicker";
 import SectionDivider from "../components/SectionDivider";
-import type { RoomResponseDto } from "../../models/Room";
 import { useSEO } from "../../hooks/useSEO";
 
 /* ── DATA ─────────────────────────────────────────────── */
