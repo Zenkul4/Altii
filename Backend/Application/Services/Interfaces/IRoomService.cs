@@ -9,6 +9,8 @@ public interface IRoomService
     Task<IReadOnlyList<RoomResponseDto>> GetAvailableAsync(DateOnly checkIn, DateOnly checkOut, RoomType? type = null, short? minCapacity = null, CancellationToken ct = default);
     Task<RoomResponseDto> CreateAsync(CreateRoomDto dto, CancellationToken ct = default);
     Task<RoomResponseDto> UpdateAsync(int id, UpdateRoomDto dto, CancellationToken ct = default);
+    Task<IReadOnlyList<RoomTypeAvailabilityDto>> GetAvailabilityByTypeAsync(
+    DateOnly checkInDate, DateOnly checkOutDate, CancellationToken ct = default);
     Task DisableAsync(int id, CancellationToken ct = default);
     Task EnableAsync(int id, CancellationToken ct = default);
     Task MarkAsAvailableAsync(int id, CancellationToken ct = default);

@@ -39,6 +39,16 @@ public class RoomsController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("availability")]
+    public async Task<IActionResult> GetAvailabilityByType(
+    [FromQuery] DateOnly checkIn,
+    [FromQuery] DateOnly checkOut,
+    CancellationToken ct = default)
+    {
+        var result = await _roomService.GetAvailabilityByTypeAsync(checkIn, checkOut, ct);
+        return Ok(result);
+    }
+
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateRoomDto dto, CancellationToken ct)

@@ -80,4 +80,28 @@ public class RoomService : IRoomService
         _uow.Rooms.Update(room);
         await _uow.SaveChangesAsync(ct);
     }
+
+    public async Task<IReadOnlyList<RoomTypeAvailabilityDto>> GetAvailabilityByTypeAsync(
+    DateOnly checkInDate, DateOnly checkOutDate, CancellationToken ct = default)
+    {
+        var availableRooms = await _uow.Rooms.GetAvailableAsync(checkInDate, checkOutDate, null, null, ct);
+
+        var result = availableRooms
+            .GroupBy(r => r.Type)
+            .Select(g => new RoomTypeAvailabilityDto
+            {
+                Type = g.Key,
+                TypeName = g.Key.ToString(),
+                TotalRooms = g.Count(),
+                AvailableRooms = g.Count(),
+                MaxCapacity = g.Max(r => r.Capacity),
+                MinPrice = g.Min(r => r.BasePrice),
+                MaxPrice = g.Max(r => r.BasePrice),
+                SampleDescription = g.FirstOrDefault(r => !string.IsNullOrEmpty(r.Description))?.Description
+            })
+            .OrderBy(r => r.Type)
+            .ToList();
+
+        return result;
+    }
 }

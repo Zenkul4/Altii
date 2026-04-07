@@ -25,6 +25,7 @@ public class RoomRepository : BaseRepository<Room>, IRoomRepository, IRoomAdminR
             .Where(b =>
                 b.Status != BookingStatus.Cancelled &&
                 b.Status != BookingStatus.Expired &&
+                b.Status != BookingStatus.CheckedOut &&
                 b.CheckInDate < checkOutDate &&
                 b.CheckOutDate > checkInDate)
             .Select(b => b.RoomId)

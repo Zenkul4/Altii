@@ -32,6 +32,13 @@ public class BookingsController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("by-type")]
+    public async Task<IActionResult> CreateByType([FromBody] CreateBookingByTypeDto dto, CancellationToken ct)
+    {
+        var result = await _bookingService.CreateByTypeAsync(dto, ct);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
