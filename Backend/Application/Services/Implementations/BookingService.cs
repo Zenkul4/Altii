@@ -230,4 +230,28 @@ public class BookingService : IBookingService
             throw;
         }
     }
+
+    public async Task<BookingResponseDto> CreateByTypeAsync(CreateBookingByTypeDto dto, CancellationToken ct = default)
+    {
+        var availableRooms = await _uow.Rooms.GetAvailableAsync(
+            dto.CheckInDate, dto.CheckOutDate, dto.RoomType, null, ct);
+
+        if (availableRooms.Count == 0)
+            throw new InvalidOperationException(
+                $"No hay habitaciones disponibles de tipo {dto.RoomType} para las fechas seleccionadas.");
+
+        var room = availableRooms.First();
+
+        var createDto = new CreateBookingDto
+        {
+            GuestId = dto.GuestId,
+            RoomId = room.Id,
+            CheckInDate = dto.CheckInDate,
+            CheckOutDate = dto.CheckOutDate,
+            Notes = dto.Notes,
+            AttendedById = null
+        };
+
+        return await CreateAsync(createDto, ct);
+    }
 }
