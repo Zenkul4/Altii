@@ -18,11 +18,22 @@ public class RoomDomainService : IRoomDomainService
 
     public void ReleaseBlock(Room room)
     {
-        if (room.Status != RoomStatus.Blocked)
-            throw new InvalidOperationException($"Room {room.Number} is not blocked.");
+        if (room.Status == RoomStatus.Available || room.Status == RoomStatus.Cleaning)
+            return;
 
-        room.Status = RoomStatus.Available;
-        room.UpdatedAt = DateTimeOffset.UtcNow;
+        if (room.Status == RoomStatus.Blocked)
+        {
+            room.Status = RoomStatus.Available;
+            room.UpdatedAt = DateTimeOffset.UtcNow;
+            return;
+        }
+
+        if (room.Status == RoomStatus.Occupied)
+        {
+            room.Status = RoomStatus.Cleaning;
+            room.UpdatedAt = DateTimeOffset.UtcNow;
+            return;
+        }
     }
 
     public void MarkAsOccupied(Room room)

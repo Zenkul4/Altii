@@ -12,12 +12,21 @@ public class PaymentService : IPaymentService
     private readonly IUnitOfWork _uow;
     private readonly IPaymentFactory _factory;
     private readonly IPaymentDomainService _domainService;
+    private readonly IBookingDomainService _bookingDomainService;
+    private readonly IRoomDomainService _roomDomainService;
 
-    public PaymentService(IUnitOfWork uow, IPaymentFactory factory, IPaymentDomainService domainService)
+    public PaymentService(
+        IUnitOfWork uow,
+        IPaymentFactory factory,
+        IPaymentDomainService domainService,
+        IBookingDomainService bookingDomainService,
+        IRoomDomainService roomDomainService)
     {
         _uow = uow;
         _factory = factory;
         _domainService = domainService;
+        _bookingDomainService = bookingDomainService;
+        _roomDomainService = roomDomainService;
     }
 
     public async Task<PaymentResponseDto> GetByIdAsync(int id, CancellationToken ct = default)
@@ -36,6 +45,17 @@ public class PaymentService : IPaymentService
 
     public async Task<PaymentResponseDto> CreateAsync(CreatePaymentDto dto, CancellationToken ct = default)
     {
+        var booking = await _uow.Bookings.GetByIdAsync(dto.BookingId, ct)
+            ?? throw new KeyNotFoundException($"Booking {dto.BookingId} not found.");
+
+        if (booking.Status != Alti.Domain.Enums.BookingStatus.PendingPayment)
+            throw new InvalidOperationException(
+                $"Booking {dto.BookingId} is not pending payment (current: {booking.Status}).");
+
+        if (dto.Amount != booking.TotalPrice)
+            throw new ArgumentException(
+                $"Payment amount ({dto.Amount}) does not match booking total ({booking.TotalPrice}).");
+
         var payment = _factory.Create(dto.BookingId, dto.Amount, dto.PaymentMethod);
 
         await _uow.Payments.AddAsync(payment, ct);
@@ -75,8 +95,60 @@ public class PaymentService : IPaymentService
 
         _domainService.Refund(payment);
         _uow.Payments.Update(payment);
+
+        var booking = await _uow.Bookings.GetByIdAsync(payment.BookingId, ct);
+        if (booking is not null &&
+            booking.Status is Alti.Domain.Enums.BookingStatus.Confirmed
+                           or Alti.Domain.Enums.BookingStatus.PendingPayment)
+        {
+            _bookingDomainService.Cancel(booking);
+            _uow.Bookings.Update(booking);
+
+            var room = await _uow.Rooms.GetByIdAsync(booking.RoomId, ct);
+            if (room is not null && room.Status == Alti.Domain.Enums.RoomStatus.Blocked)
+            {
+                _roomDomainService.ReleaseBlock(room);
+                _uow.Rooms.Update(room);
+            }
+        }
+
         await _uow.SaveChangesAsync(ct);
 
         return PaymentMapper.ToDto(payment);
+    }
+
+    public async Task<PaymentResponseDto> RegisterCashPaymentAsync(int bookingId, CancellationToken ct = default)
+    {
+        var booking = await _uow.Bookings.GetByIdAsync(bookingId, ct)
+            ?? throw new KeyNotFoundException($"Booking {bookingId} not found.");
+
+        if (booking.Status != Alti.Domain.Enums.BookingStatus.PendingPayment)
+            throw new InvalidOperationException(
+                $"Booking {bookingId} is not pending payment (current: {booking.Status}).");
+
+        await _uow.BeginTransactionAsync(ct);
+
+        try
+        {
+            var payment = _factory.Create(bookingId, booking.TotalPrice, "Cash");
+            await _uow.Payments.AddAsync(payment, ct);
+            await _uow.SaveChangesAsync(ct);
+
+            _domainService.Approve(payment, $"CASH-{DateTime.UtcNow:yyyyMMddHHmmss}");
+            _uow.Payments.Update(payment);
+
+            _bookingDomainService.Confirm(booking, payment);
+            _uow.Bookings.Update(booking);
+
+            await _uow.SaveChangesAsync(ct);
+            await _uow.CommitTransactionAsync(ct);
+
+            return PaymentMapper.ToDto(payment);
+        }
+        catch
+        {
+            await _uow.RollbackTransactionAsync(ct);
+            throw;
+        }
     }
 }

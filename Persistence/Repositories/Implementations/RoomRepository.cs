@@ -6,7 +6,8 @@ using Persistence.Context;
 
 namespace Persistence.Repositories.Implementations;
 
-public class RoomRepository : BaseRepository<Room>, IRoomRepository
+public class RoomRepository : BaseRepository<Room>, IRoomRepository, IRoomAdminRepository
+
 {
     public RoomRepository(AppDbContext context) : base(context) { }
 
@@ -41,4 +42,9 @@ public class RoomRepository : BaseRepository<Room>, IRoomRepository
 
         return await query.ToListAsync(ct);
     }
+    public async Task<IReadOnlyList<Room>> GetAllAsync(CancellationToken ct = default)
+    => await DbSet.ToListAsync(ct);
+
+    async Task<Room?> IRoomAdminRepository.GetByIdAsync(int id, CancellationToken ct)
+        => await DbSet.FirstOrDefaultAsync(r => r.Id == id, ct);
 }

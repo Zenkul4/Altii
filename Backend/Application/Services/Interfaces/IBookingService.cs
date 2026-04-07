@@ -13,4 +13,5 @@ public interface IBookingService
     Task CheckInAsync(int id, int receptionistId, CancellationToken ct = default);
     Task CheckOutAsync(int id, CancellationToken ct = default);
     Task CancelAsync(int id, CancellationToken ct = default);
+    Task ExpireOverdueAsync(CancellationToken ct = default);
 }

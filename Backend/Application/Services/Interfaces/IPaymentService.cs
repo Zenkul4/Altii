@@ -10,4 +10,5 @@ public interface IPaymentService
     Task<PaymentResponseDto> ApproveAsync(int id, string externalReference, CancellationToken ct = default);
     Task<PaymentResponseDto> RejectAsync(int id, CancellationToken ct = default);
     Task<PaymentResponseDto> RefundAsync(int id, CancellationToken ct = default);
+    Task<PaymentResponseDto> RegisterCashPaymentAsync(int bookingId, CancellationToken ct = default);
 }

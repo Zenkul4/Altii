@@ -58,4 +58,5 @@ public class BookingDomainService : IBookingDomainService
         booking.Status = BookingStatus.Expired;
         booking.UpdatedAt = DateTimeOffset.UtcNow;
     }
+
 }

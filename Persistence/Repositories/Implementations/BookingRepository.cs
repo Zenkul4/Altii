@@ -6,9 +6,15 @@ using Persistence.Context;
 
 namespace Persistence.Repositories.Implementations;
 
-public class BookingRepository : BaseRepository<Booking>, IBookingRepository
+public class BookingRepository : BaseRepository<Booking>, IBookingRepository, IBookingAdminRepository
 {
     public BookingRepository(AppDbContext context) : base(context) { }
+    public async Task<IReadOnlyList<Booking>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
+        => await DbSet
+            .OrderByDescending(b => b.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
 
     public async Task<Booking?> GetByCodeAsync(string code, CancellationToken ct = default)
         => await DbSet.FirstOrDefaultAsync(b => b.Code == code.ToUpper(), ct);
@@ -47,6 +53,7 @@ public class BookingRepository : BaseRepository<Booking>, IBookingRepository
             b.RoomId == roomId &&
             b.Status != BookingStatus.Cancelled &&
             b.Status != BookingStatus.Expired &&
+            b.Status != BookingStatus.CheckedOut &&
             b.CheckInDate < checkOutDate &&
             b.CheckOutDate > checkInDate);
 
