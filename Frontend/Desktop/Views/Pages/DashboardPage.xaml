@@ -1,0 +1,188 @@
+﻿<UserControl x:Class="Desktop.Views.Pages.DashboardPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:Desktop.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Background="#0F0F1E"
+             Loaded="OnLoaded">
+
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:StringToColorConverter    x:Key="StrToColor"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24">
+
+            <TextBlock Foreground="#666688" FontSize="13" Margin="0,0,0,24">
+                <Run Text="Resumen de operaciones —"/>
+                <Run Text="{Binding Source={x:Static sys:DateTime.Now},
+                     StringFormat='{}{0:dddd dd/MM/yyyy}', Mode=OneTime}"/>
+            </TextBlock>
+
+            <UniformGrid Rows="2" Columns="3" Margin="0,0,0,32">
+
+                <Border Margin="0,0,8,8" Background="#13132A" Padding="20">
+                    <StackPanel>
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#1A1040"
+                                HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="CalendarClock" Width="18" Height="18"
+                                                     Foreground="#8B5FBF"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding TotalBookings}"
+                                   Foreground="White" FontSize="32" FontWeight="Light"/>
+                        <TextBlock Text="Reservas activas"
+                                   Foreground="#666688" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="4,0,4,8" Background="#13132A" Padding="20">
+                    <StackPanel>
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#0D2A1A"
+                                HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18"
+                                                     Foreground="#10B981"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding ConfirmedBookings}"
+                                   Foreground="White" FontSize="32" FontWeight="Light"/>
+                        <TextBlock Text="Confirmadas"
+                                   Foreground="#666688" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="8,0,0,8" Background="#13132A" Padding="20">
+                    <StackPanel>
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#0D1F3A"
+                                HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="BedKing" Width="18" Height="18"
+                                                     Foreground="#3B82F6"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding CheckedInBookings}"
+                                   Foreground="White" FontSize="32" FontWeight="Light"/>
+                        <TextBlock Text="En hotel (Check-in)"
+                                   Foreground="#666688" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,0,8,0" Background="#13132A" Padding="20">
+                    <StackPanel>
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#2A1A0D"
+                                HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="CreditCardClock" Width="18" Height="18"
+                                                     Foreground="#F59E0B"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding PendingPayments}"
+                                   Foreground="White" FontSize="32" FontWeight="Light"/>
+                        <TextBlock Text="Pagos pendientes"
+                                   Foreground="#666688" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="4,0,4,0" Background="#13132A" Padding="20">
+                    <StackPanel>
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#0A1F1A"
+                                HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="DoorOpen" Width="18" Height="18"
+                                                     Foreground="#10B981"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding AvailableRooms}"
+                                   Foreground="White" FontSize="32" FontWeight="Light"/>
+                        <TextBlock Text="Habitaciones disponibles"
+                                   Foreground="#666688" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="8,0,0,0" Background="#13132A" Padding="20">
+                    <StackPanel>
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#1A0D2A"
+                                HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="AccountGroup" Width="18" Height="18"
+                                                     Foreground="#8B5FBF"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding TotalUsers}"
+                                   Foreground="White" FontSize="32" FontWeight="Light"/>
+                        <TextBlock Text="Usuarios activos"
+                                   Foreground="#666688" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <TextBlock Text="RESERVAS RECIENTES" Foreground="#444466"
+                       FontSize="11" Margin="0,0,0,12"/>
+
+            <Border Background="#13132A">
+                <ListView ItemsSource="{Binding RecentBookings}"
+                          Background="Transparent" BorderThickness="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Background"      Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding"         Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="16,12" BorderThickness="0,0,0,1" BorderBrush="#1A1A3A">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="130"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0" Width="8" Height="8"
+                                             Margin="0,0,12,0" VerticalAlignment="Center"
+                                             Fill="{Binding StatusColor, Converter={StaticResource StrToColor}}"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Foreground="White" FontSize="13" FontWeight="Medium">
+                                            <Run Text="{Binding Code, Mode=OneWay}"/>
+                                            <Run Text=" — "/>
+                                            <Run Text="{Binding GuestFullName, Mode=OneWay}"/>
+                                        </TextBlock>
+                                        <TextBlock Foreground="#666688" FontSize="11" Margin="0,2,0,0">
+                                            <Run Text="Hab."/>
+                                            <Run Text="{Binding RoomNumber, Mode=OneWay}"/>
+                                            <Run Text=" · "/>
+                                            <Run Text="{Binding Nights, Mode=OneWay}"/>
+                                            <Run Text=" noches"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding TotalPrice, StringFormat='${0:N2}'}"
+                                               Foreground="#8B5FBF" FontSize="14"
+                                               VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                    <Border Grid.Column="3" Padding="8,3" Background="#1A1A3A">
+                                        <TextBlock Text="{Binding StatusLabel}" FontSize="11"
+                                                   Foreground="{Binding StatusColor,
+                                                       Converter={StaticResource StrToColor}}"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Border>
+
+            <Border Background="#3D1515" Padding="12,8" Margin="0,16,0,0"
+                    Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}">
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#FCA5A5" FontSize="13"/>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

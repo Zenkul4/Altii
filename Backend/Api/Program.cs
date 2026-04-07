@@ -65,7 +65,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddHostedService<Api.BackgroundServices.BookingExpirationService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllPolicy", policy =>

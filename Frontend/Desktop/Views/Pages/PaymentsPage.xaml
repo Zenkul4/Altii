@@ -1,0 +1,386 @@
+﻿<UserControl x:Class="Desktop.Views.Pages.PaymentsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:Desktop.Converters"
+             Background="#0F0F1E"
+             Loaded="OnLoaded">
+
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter        x:Key="BoolToVis"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InvBoolToVis"/>
+        <converters:StringToColorConverter           x:Key="StrToColor"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="360"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ══ LISTA ══ -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Toolbar -->
+            <Border Grid.Row="0" Padding="24,16" BorderThickness="0,0,0,1" BorderBrush="#1E1E3A">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="#13132A" BorderBrush="#2A2A4A"
+                            BorderThickness="1" Padding="12,8" MaxWidth="300"
+                            HorizontalAlignment="Left">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding SearchBookingId, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent" BorderThickness="0"
+                                     Foreground="White" FontSize="13"
+                                     materialDesign:HintAssist.Hint="ID de reserva..."
+                                     materialDesign:HintAssist.Foreground="#666688">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Return" Command="{Binding SearchByBookingCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                            <Button Grid.Column="1" Command="{Binding SearchByBookingCommand}"
+                                    Background="Transparent" BorderThickness="0"
+                                    Foreground="#8B5FBF" Cursor="Hand" Padding="4">
+                                <materialDesign:PackIcon Kind="Magnify" Width="18" Height="18"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <Button Grid.Column="1" Command="{Binding LoadCommand}"
+                            Background="#1A1A3A" BorderThickness="0"
+                            Foreground="#8B5FBF" Cursor="Hand" Padding="10,8">
+                        <materialDesign:PackIcon Kind="Refresh" Width="18" Height="18"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Mensajes -->
+            <StackPanel Grid.Row="1">
+                <Border Background="#1A3A1A" Padding="12,8" Margin="16,8,16,0"
+                        Visibility="{Binding SuccessMessage,
+                            Converter={StaticResource BoolToVis}, ConverterParameter=notempty}">
+                    <TextBlock Text="{Binding SuccessMessage}" Foreground="#86EFAC" FontSize="13"/>
+                </Border>
+                <Border Background="#3D1515" Padding="12,8" Margin="16,8,16,0"
+                        Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="#FCA5A5" FontSize="13"/>
+                </Border>
+            </StackPanel>
+
+            <!-- Lista pagos -->
+            <ListView Grid.Row="2"
+                      ItemsSource="{Binding Payments}"
+                      SelectedItem="{Binding Selected}"
+                      Background="Transparent" BorderThickness="0"
+                      Margin="16,8"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Background"       Value="Transparent"/>
+                        <Setter Property="BorderThickness"  Value="0"/>
+                        <Setter Property="Padding"          Value="0,4"/>
+                        <Setter Property="Cursor"           Value="Hand"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#13132A"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#1A1040"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="12,10" BorderThickness="0,0,0,1" BorderBrush="#1A1A3A">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="110"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Ellipse Grid.Column="0" Width="10" Height="10"
+                                         Margin="0,0,12,0" VerticalAlignment="Center"
+                                         Fill="{Binding StatusColor, Converter={StaticResource StrToColor}}"/>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Foreground="White" FontSize="14" FontWeight="Medium">
+                                        <Run Text="Reserva #"/>
+                                        <Run Text="{Binding BookingId, Mode=OneWay}"/>
+                                    </TextBlock>
+                                    <TextBlock Foreground="#666688" FontSize="12" Margin="0,2,0,0">
+                                        <Run Text="{Binding PaymentMethod, Mode=OneWay}"/>
+                                        <Run Text=" · "/>
+                                        <Run Text="{Binding CreatedAt, StringFormat='{}{0:dd/MM/yyyy}', Mode=OneWay}"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                           Foreground="#8B5FBF" FontSize="15"
+                                           FontWeight="Medium" VerticalAlignment="Center"
+                                           Margin="0,0,16,0"/>
+
+                                <Border Grid.Column="3" VerticalAlignment="Center"
+                                        Padding="8,4" Background="#1A1A3A">
+                                    <TextBlock Text="{Binding StatusLabel}"
+                                               FontSize="11" FontWeight="Medium"
+                                               Foreground="{Binding StatusColor,
+                                                   Converter={StaticResource StrToColor}}"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Border Grid.Row="3" Padding="16,8" BorderThickness="0,1,0,0" BorderBrush="#1E1E3A">
+                <TextBlock Foreground="#444466" FontSize="11">
+                    <Run Text="{Binding Payments.Count, Mode=OneWay}"/>
+                    <Run Text=" pagos"/>
+                </TextBlock>
+            </Border>
+        </Grid>
+
+        <!-- ══ DETALLE ══ -->
+        <Border Grid.Column="1" BorderThickness="1,0,0,0" BorderBrush="#1E1E3A"
+                Visibility="{Binding ShowDetail, Converter={StaticResource BoolToVis}}">
+            <Border.Background>
+                <SolidColorBrush Color="#0D0D20"/>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Border Grid.Row="0" Padding="20,16" BorderThickness="0,0,0,1" BorderBrush="#1E1E3A">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Selected.Amount, StringFormat='${0:N2}'}"
+                                       Foreground="White" FontSize="22" FontWeight="Medium"/>
+                            <TextBlock Foreground="{Binding Selected.StatusColor,
+                                           Converter={StaticResource StrToColor}}"
+                                       FontSize="12" Margin="0,2,0,0"
+                                       Text="{Binding Selected.StatusLabel}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Command="{Binding CloseDetailCommand}"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="#666688" Cursor="Hand">
+                            <materialDesign:PackIcon Kind="Close" Width="16" Height="16"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Datos -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+
+                        <TextBlock Text="INFORMACIÓN" Foreground="#444466" FontSize="10" Margin="0,0,0,8"/>
+                        <StackPanel Margin="0,0,0,20">
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="ID Reserva" Foreground="#666688" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Foreground="White" FontSize="12"
+                                           Text="{Binding Selected.BookingId}"/>
+                            </Grid>
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Método" Foreground="#666688" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Foreground="White" FontSize="12"
+                                           Text="{Binding Selected.PaymentMethod}"/>
+                            </Grid>
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Referencia" Foreground="#666688" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Foreground="White" FontSize="12"
+                                           Text="{Binding Selected.ExternalReference, TargetNullValue='—'}"/>
+                            </Grid>
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Creado" Foreground="#666688" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Foreground="White" FontSize="12"
+                                           Text="{Binding Selected.CreatedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}"/>
+                            </Grid>
+                            <Grid Margin="0,5"
+                                  Visibility="{Binding Selected.ProcessedAt,
+                                      Converter={StaticResource BoolToVis}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Procesado" Foreground="#666688" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Foreground="White" FontSize="12"
+                                           Text="{Binding Selected.ProcessedAt, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Referencia externa para aprobar -->
+                        <StackPanel Visibility="{Binding CanApprove, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="REFERENCIA EXTERNA" Foreground="#444466"
+                                       FontSize="10" Margin="0,0,0,8"/>
+                            <Border Background="#13132A" BorderBrush="#2A2A4A" BorderThickness="1" Padding="10,8">
+                                <TextBox Text="{Binding ExternalReference, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="Transparent" BorderThickness="0"
+                                         Foreground="White" FontSize="13"
+                                         materialDesign:HintAssist.Hint="REF-001 (opcional)"
+                                         materialDesign:HintAssist.Foreground="#666688"/>
+                            </Border>
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Acciones -->
+                <Border Grid.Row="2" Padding="20,16" BorderThickness="0,1,0,0" BorderBrush="#1E1E3A">
+                    <StackPanel>
+                        <!-- Aprobar -->
+                        <Button Command="{Binding ApproveCommand}"
+                                Visibility="{Binding CanApprove, Converter={StaticResource BoolToVis}}"
+                                Height="40" Margin="0,4" Cursor="Hand" BorderThickness="0"
+                                Background="#0D7A4A" Foreground="White" FontSize="13" FontWeight="Medium">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="4">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#0A5E38"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CheckCircle" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Aprobar pago" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Rechazar -->
+                        <Button Command="{Binding RejectCommand}"
+                                Visibility="{Binding CanReject, Converter={StaticResource BoolToVis}}"
+                                Height="40" Margin="0,4" Cursor="Hand" BorderThickness="1"
+                                BorderBrush="#EF4444" Background="Transparent" Foreground="#EF4444"
+                                FontSize="13" FontWeight="Medium">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="4">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#3D1515"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CloseCircle" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Rechazar pago" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Reembolsar -->
+                        <Button Command="{Binding RefundCommand}"
+                                Visibility="{Binding CanRefund, Converter={StaticResource BoolToVis}}"
+                                Height="40" Margin="0,4" Cursor="Hand" BorderThickness="1"
+                                BorderBrush="#8B5CF6" Background="Transparent" Foreground="#8B5CF6"
+                                FontSize="13" FontWeight="Medium">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="4">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#2D1B69"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Undo" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Reembolsar" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Loading -->
+        <Grid Grid.ColumnSpan="2"
+              Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+            <Grid.Background>
+                <SolidColorBrush Color="#80000000"/>
+            </Grid.Background>
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                         IsIndeterminate="True" Width="48" Height="48"
+                         Foreground="#8B5FBF"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

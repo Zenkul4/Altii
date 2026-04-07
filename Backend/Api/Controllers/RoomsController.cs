@@ -1,5 +1,6 @@
 ﻿using Alti.Domain.Enums;
 using Application.DTOs.Room;
+using Application.Interfaces;
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace Api.Controllers;
 public class RoomsController : ControllerBase
 {
     private readonly IRoomService _roomService;
+    private readonly IRoomAdminService _roomAdminService;
 
-    public RoomsController(IRoomService roomService)
+    public RoomsController(IRoomService roomService, IRoomAdminService roomAdminService)
     {
         _roomService = roomService;
+        _roomAdminService = roomAdminService;
     }
 
     [HttpGet("{id}")]
@@ -73,6 +76,46 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> MarkAsAvailable(int id, CancellationToken ct)
     {
         await _roomService.MarkAsAvailableAsync(id, ct);
+        return NoContent();
+    }
+
+    [HttpGet("all")]
+    [Authorize]
+    public async Task<IActionResult> GetAll()
+    {
+        var rooms = await _roomAdminService.GetAllRoomsAsync();
+        return Ok(rooms);
+    }
+
+    [HttpPatch("{id}/mark-occupied")]
+    [Authorize]
+    public async Task<IActionResult> MarkOccupied(int id)
+    {
+        await _roomAdminService.MarkOccupiedAsync(id);
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/mark-cleaning")]
+    [Authorize]
+    public async Task<IActionResult> MarkCleaning(int id)
+    {
+        await _roomAdminService.MarkCleaningAsync(id);
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/mark-blocked")]
+    [Authorize]
+    public async Task<IActionResult> MarkBlocked(int id)
+    {
+        await _roomAdminService.MarkBlockedAsync(id);
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/release-block")]
+    [Authorize]
+    public async Task<IActionResult> ReleaseBlock(int id)
+    {
+        await _roomAdminService.ReleaseBlockAsync(id);
         return NoContent();
     }
 }

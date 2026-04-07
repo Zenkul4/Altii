@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Booking;
+using Application.Interfaces;
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,24 @@ namespace Api.Controllers;
 public class BookingsController : ControllerBase
 {
     private readonly IBookingService _bookingService;
+    private readonly IBookingAdminService _bookingAdminService;  
 
-    public BookingsController(IBookingService bookingService)
+    public BookingsController(
+        IBookingService bookingService,
+        IBookingAdminService bookingAdminService)                
     {
         _bookingService = bookingService;
+        _bookingAdminService = bookingAdminService;
+    }
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll(
+     [FromQuery] int page = 1,
+     [FromQuery] int pageSize = 50,
+     CancellationToken ct = default)
+    {
+        var result = await _bookingAdminService.GetAllBookingsAsync(page, pageSize, ct);
+        return Ok(result);
     }
 
     [HttpGet("{id}")]

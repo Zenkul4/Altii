@@ -58,4 +58,11 @@ public class PaymentsController : ControllerBase
         var result = await _paymentService.RefundAsync(id, ct);
         return Ok(result);
     }
+
+    [HttpPost("cash/{bookingId}")]
+    public async Task<IActionResult> RegisterCash(int bookingId, CancellationToken ct)
+    {
+        var result = await _paymentService.RegisterCashPaymentAsync(bookingId, ct);
+        return Ok(result);
+    }
 }

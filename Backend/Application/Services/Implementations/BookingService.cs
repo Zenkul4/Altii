@@ -1,6 +1,7 @@
 ﻿using Alti.Domain.Exceptions;
 using Alti.Domain.Factories.Interfaces;
 using Alti.Domain.Interfaces;
+using Alti.Domain.Services.Implementations;
 using Alti.Domain.Services.Interfaces;
 using Application.DTOs.Booking;
 using Application.Interfaces;
@@ -14,6 +15,7 @@ public class BookingService : IBookingService
     private readonly IUnitOfWork _uow;
     private readonly IBookingFactory _factory;
     private readonly IBookingDomainService _domainService;
+    private readonly IPaymentDomainService _paymentDomainService;
     private readonly IRoomDomainService _roomDomainService;
     private readonly ICodeGeneratorService _codeGenerator;
 
@@ -21,12 +23,14 @@ public class BookingService : IBookingService
         IUnitOfWork uow,
         IBookingFactory factory,
         IBookingDomainService domainService,
+        IPaymentDomainService paymentDomainService,
         IRoomDomainService roomDomainService,
         ICodeGeneratorService codeGenerator)
     {
         _uow = uow;
         _factory = factory;
         _domainService = domainService;
+        _paymentDomainService = paymentDomainService;
         _roomDomainService = roomDomainService;
         _codeGenerator = codeGenerator;
     }
@@ -164,6 +168,27 @@ public class BookingService : IBookingService
             throw;
         }
     }
+    public async Task ExpireOverdueAsync(CancellationToken ct = default)
+    {
+        var expired = await _uow.Bookings.GetExpiredPendingAsync(ct);
+
+        foreach (var booking in expired)
+        {
+            var room = await _uow.Rooms.GetByIdAsync(booking.RoomId, ct);
+
+            _domainService.Expire(booking);
+            _uow.Bookings.Update(booking);
+
+            if (room is not null)
+            {
+                _roomDomainService.ReleaseBlock(room);
+                _uow.Rooms.Update(room);
+            }
+        }
+
+        if (expired.Count > 0)
+            await _uow.SaveChangesAsync(ct);
+    }
 
     public async Task CancelAsync(int id, CancellationToken ct = default)
     {
@@ -178,9 +203,24 @@ public class BookingService : IBookingService
         try
         {
             _domainService.Cancel(booking);
-            _roomDomainService.ReleaseBlock(room);
             _uow.Bookings.Update(booking);
-            _uow.Rooms.Update(room);
+
+            var payments = await _uow.Payments.GetByBookingAsync(booking.Id, ct);
+            foreach (var payment in payments)
+            {
+                if (payment.Status == Alti.Domain.Enums.PaymentStatus.Pending)
+                {
+                    _paymentDomainService.Reject(payment);
+                    _uow.Payments.Update(payment);
+                }
+            }
+
+            if (room.Status == Alti.Domain.Enums.RoomStatus.Blocked)
+            {
+                _roomDomainService.ReleaseBlock(room);
+                _uow.Rooms.Update(room);
+            }
+
             await _uow.SaveChangesAsync(ct);
             await _uow.CommitTransactionAsync(ct);
         }
