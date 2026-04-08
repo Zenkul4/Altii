@@ -13,6 +13,9 @@ public partial class MainShellViewModel : BaseViewModel
     private readonly PaymentsViewModel _paymentsVm;
     private readonly RoomsViewModel _roomsVm;
     private readonly UsersViewModel _usersVm;
+    private readonly SeasonsViewModel _seasonsVm;
+    private readonly RatesViewModel _ratesVm;
+    private readonly ServicesViewModel _servicesVm;
 
     [ObservableProperty]
     private BaseViewModel _currentPage;
@@ -34,7 +37,10 @@ public partial class MainShellViewModel : BaseViewModel
         BookingsViewModel bookingsVm,
         PaymentsViewModel paymentsVm,
         RoomsViewModel roomsVm,
-        UsersViewModel usersVm)
+        UsersViewModel usersVm,
+        SeasonsViewModel seasonsVm,
+        RatesViewModel ratesVm,
+        ServicesViewModel servicesVm)
     {
         _authService = authService;
         _dashboardVm = dashboardVm;
@@ -42,8 +48,11 @@ public partial class MainShellViewModel : BaseViewModel
         _paymentsVm = paymentsVm;
         _roomsVm = roomsVm;
         _usersVm = usersVm;
+        _seasonsVm = seasonsVm;
 
         _currentPage = dashboardVm;
+        _ratesVm = ratesVm;
+        _servicesVm = servicesVm;
     }
 
     [RelayCommand]
@@ -57,6 +66,9 @@ public partial class MainShellViewModel : BaseViewModel
             "Payments" => "Gestión de Pagos",
             "Rooms" => "Habitaciones",
             "Users" => "Usuarios",
+            "Seasons" => "Temporadas",
+            "Rates" => "Tarifas",
+            "Services" => "Servicios Adicionales",
             _ => page
         };
         CurrentPage = page switch
@@ -66,6 +78,9 @@ public partial class MainShellViewModel : BaseViewModel
             "Payments" => _paymentsVm,
             "Rooms" => _roomsVm,
             "Users" => _usersVm,
+            "Seasons" => _seasonsVm,
+            "Rates" => _ratesVm,
+            "Services" => _servicesVm,
             _ => _dashboardVm
         };
     }

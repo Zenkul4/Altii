@@ -27,6 +27,10 @@ public partial class App : Application
         services.AddSingleton<IPaymentService, PaymentService>();
         services.AddSingleton<IRoomService, RoomService>();
         services.AddSingleton<IUserService, UserService>();
+        services.AddSingleton<ISeasonService, SeasonService>();
+        services.AddSingleton<IRateService, RateService>();
+        services.AddSingleton<IAdditionalServiceService, AdditionalServiceService>();
+
 
         // ViewModels
         services.AddTransient<LoginViewModel>();
@@ -50,15 +54,29 @@ public partial class App : Application
         services.AddTransient<UsersViewModel>(sp => new UsersViewModel(
             sp.GetRequiredService<IUserService>()
         ));
+        services.AddTransient<SeasonsViewModel>(sp => new SeasonsViewModel(
+            sp.GetRequiredService<ISeasonService>(),
+            sp.GetRequiredService<IAuthService>()
+        ));
+        services.AddTransient<RatesViewModel>(sp => new RatesViewModel(
+            sp.GetRequiredService<IRateService>(),
+            sp.GetRequiredService<ISeasonService>(),
+            sp.GetRequiredService<IAuthService>()
+        ));
+        services.AddTransient<ServicesViewModel>(sp => new ServicesViewModel(
+            sp.GetRequiredService<IAdditionalServiceService>()
+        ));
         services.AddTransient<MainShellViewModel>(sp => new MainShellViewModel(
             sp.GetRequiredService<IAuthService>(),
             sp.GetRequiredService<DashboardViewModel>(),
             sp.GetRequiredService<BookingsViewModel>(),
             sp.GetRequiredService<PaymentsViewModel>(),
             sp.GetRequiredService<RoomsViewModel>(),
-            sp.GetRequiredService<UsersViewModel>()
+            sp.GetRequiredService<UsersViewModel>(),
+            sp.GetRequiredService<SeasonsViewModel>(),
+            sp.GetRequiredService<RatesViewModel>(),
+            sp.GetRequiredService<ServicesViewModel>()
         ));
-
         // Views
         services.AddTransient<LoginView>();
         services.AddTransient<MainShellView>();

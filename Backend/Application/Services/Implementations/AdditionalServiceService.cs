@@ -1,5 +1,6 @@
 ﻿using Alti.Domain.Factories.Interfaces;
 using Alti.Domain.Interfaces;
+using Alti.Domain.Interfaces.Repositories;
 using Alti.Domain.Services.Interfaces;
 using Application.Dtos.AdditionalService;
 using Application.Mappers;
@@ -12,15 +13,18 @@ public class AdditionalServiceService : IAdditionalServiceService
     private readonly IUnitOfWork _uow;
     private readonly IAdditionalServiceFactory _factory;
     private readonly IAdditionalServiceDomainService _domainService;
+    private readonly IAdditionalServiceAdminRepository _adminRepo;
 
     public AdditionalServiceService(
         IUnitOfWork uow,
         IAdditionalServiceFactory factory,
-        IAdditionalServiceDomainService domainService)
+        IAdditionalServiceDomainService domainService,
+        IAdditionalServiceAdminRepository adminRepo)
     {
         _uow = uow;
         _factory = factory;
         _domainService = domainService;
+        _adminRepo = adminRepo;
     }
 
     public async Task<AdditionalServiceResponseDto> GetByIdAsync(int id, CancellationToken ct = default)
@@ -77,5 +81,11 @@ public class AdditionalServiceService : IAdditionalServiceService
         _domainService.Activate(service);
         _uow.AdditionalServices.Update(service);
         await _uow.SaveChangesAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<AdditionalServiceResponseDto>> GetAllAsync(CancellationToken ct = default)
+    {
+        var services = await _adminRepo.GetAllAsync(ct);
+        return services.Select(AdditionalServiceMapper.ToDto).ToList();
     }
 }

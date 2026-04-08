@@ -35,4 +35,5 @@ public class AdditionalServiceDomainService : IAdditionalServiceDomainService
         service.IsActive = true;
         service.UpdatedAt = DateTimeOffset.UtcNow;
     }
+
 }

@@ -33,6 +33,16 @@
         <DataTemplate DataType="{x:Type vm:UsersViewModel}">
             <pages:UsersPage/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SeasonsViewModel}">
+            <pages:SeasonsPage/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RatesViewModel}">
+            <pages:RatesPage/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ServicesViewModel}">
+            <pages:ServicesPage/>
+        </DataTemplate>
+        
 
         <!-- Botón nav inactivo -->
         <Style x:Key="NavBtn" TargetType="Button">
@@ -243,6 +253,84 @@
                             </StackPanel>
                         </Button>
 
+                        <!-- Temporadas -->
+                        <Button Command="{Binding NavigateToCommand}" CommandParameter="Seasons">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource NavBtn}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMenu}" Value="Seasons">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="#1A1A3A" BorderThickness="3,0,0,0" BorderBrush="#8B5FBF" Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CalendarStar" Width="18" Height="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="Temporadas" FontSize="13" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <!-- Tarifas -->
+                        <Button Command="{Binding NavigateToCommand}" CommandParameter="Rates">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource NavBtn}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMenu}" Value="Rates">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="#1A1A3A" BorderThickness="3,0,0,0" BorderBrush="#8B5FBF" Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="TagMultiple" Width="18" Height="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="Tarifas" FontSize="13" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <!-- Servicios -->
+                        <Button Command="{Binding NavigateToCommand}" CommandParameter="Services">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource NavBtn}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMenu}" Value="Services">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="#1A1A3A" BorderThickness="3,0,0,0" BorderBrush="#8B5FBF" Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="RoomService" Width="18" Height="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="Servicios" FontSize="13" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        
                         <!-- Usuarios — solo admin -->
                         <Button Command="{Binding NavigateToCommand}"
                                 CommandParameter="Users"

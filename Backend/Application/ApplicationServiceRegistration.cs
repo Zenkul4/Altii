@@ -27,6 +27,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IBookingAdminService, BookingAdminService>();
         services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
 
+
         return services;
     }
 }
