@@ -10,4 +10,6 @@ public interface IAdditionalServiceService
     Task<AdditionalServiceResponseDto> UpdateAsync(int id, UpdateAdditionalServiceDto dto, CancellationToken ct = default);
     Task DeactivateAsync(int id, CancellationToken ct = default);
     Task ActivateAsync(int id, CancellationToken ct = default);
+
+    Task<IReadOnlyList<AdditionalServiceResponseDto>> GetAllAsync(CancellationToken ct = default);
 }

@@ -62,4 +62,12 @@ public class AdditionalServicesController : ControllerBase
         await _service.ActivateAsync(id, ct);
         return NoContent();
     }
+
+    [HttpGet("all")]
+    [Authorize]
+    public async Task<IActionResult> GetAll(CancellationToken ct)
+    {
+        var result = await _service.GetAllAsync(ct);
+        return Ok(result);
+    }
 }
