@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Helpers;
 using Desktop.Services.Interfaces;
+using System.Net.Http; // Para manejo de errores de red si fuera necesario
+using System.Windows;
 
 namespace Desktop.ViewModels;
 
@@ -49,10 +51,10 @@ public partial class MainShellViewModel : BaseViewModel
         _roomsVm = roomsVm;
         _usersVm = usersVm;
         _seasonsVm = seasonsVm;
-
-        _currentPage = dashboardVm;
         _ratesVm = ratesVm;
         _servicesVm = servicesVm;
+
+        _currentPage = dashboardVm;
     }
 
     [RelayCommand]
@@ -71,6 +73,7 @@ public partial class MainShellViewModel : BaseViewModel
             "Services" => "Servicios Adicionales",
             _ => page
         };
+
         CurrentPage = page switch
         {
             "Dashboard" => _dashboardVm,
@@ -83,20 +86,31 @@ public partial class MainShellViewModel : BaseViewModel
             "Services" => _servicesVm,
             _ => _dashboardVm
         };
+
+        // Al navegar, limpiamos mensajes de error previos de la vista base
+        ClearMessages();
     }
 
     [RelayCommand]
     private void Logout()
     {
-        _authService.Logout();
-        SessionStore.CurrentUser = null;
-
-        var login = App.Services.GetService(typeof(Desktop.Views.LoginView)) as Desktop.Views.LoginView;
-        login!.Show();
-
-        foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
+        try
         {
-            if (w is Desktop.Views.MainShellView) { w.Close(); break; }
+            _authService.Logout();
+            SessionStore.CurrentUser = null;
+
+            var login = App.Services.GetService(typeof(Desktop.Views.LoginView)) as Desktop.Views.LoginView;
+            login!.Show();
+
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w is Desktop.Views.MainShellView) { w.Close(); break; }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Error al intentar cerrar sesión o manipular ventanas
+            MessageBox.Show($"Error al cerrar sesión: {ex.Message}", "ALTI System", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

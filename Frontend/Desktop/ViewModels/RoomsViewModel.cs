@@ -4,6 +4,7 @@ using Desktop.Models.Room;
 using Desktop.Services;
 using Desktop.Services.Interfaces;
 using System.Collections.ObjectModel;
+using System.Net.Http; // Inyectado para manejo de errores de red
 using static Desktop.Models.Room.RoomDto;
 
 namespace Desktop.ViewModels;
@@ -55,6 +56,35 @@ public partial class RoomsViewModel : BaseViewModel
         ShowDetail = value is not null;
         ShowCreateForm = false;
     }
+
+    [RelayCommand]
+    public async Task LoadAsync()
+    {
+        IsLoading = true;
+        ClearMessages();
+        try
+        {
+            var list = await _roomService.GetAllAsync();
+            Rooms = new ObservableCollection<RoomDto>(
+                FilterStatus == "All"
+                    ? list
+                    : list.Where(r => r.StatusLabel == FilterStatus));
+        }
+        catch (HttpRequestException)
+        {
+            SetError("Error de conexión: El servidor no responde. Verifique que la API esté encendida.");
+        }
+        catch (ApiException ex)
+        {
+            SetError($"Error {ex.StatusCode}: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            SetError($"Error inesperado: {ex.Message}");
+        }
+        finally { IsLoading = false; }
+    }
+
     [RelayCommand]
     private async Task MarkBlockedAsync()
     {
@@ -67,6 +97,7 @@ public partial class RoomsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
+        catch (HttpRequestException) { SetError("No se pudo conectar con el servidor para bloquear la habitación."); }
         catch (Exception ex) { SetError(ex.Message); }
         finally { IsLoading = false; }
     }
@@ -83,40 +114,9 @@ public partial class RoomsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
+        catch (HttpRequestException) { SetError("Error de red al intentar liberar el bloqueo."); }
         catch (Exception ex) { SetError(ex.Message); }
         finally { IsLoading = false; }
-    }
-
-    [RelayCommand]
-    public async Task LoadAsync()
-    {
-        IsLoading = true;
-        ClearMessages();
-        try
-        {
-            var list = await _roomService.GetAllAsync();
-            Rooms = new ObservableCollection<RoomDto>(
-                FilterStatus == "All"
-                    ? list
-                    : list.Where(r => r.StatusLabel == FilterStatus));
-        }
-        catch (Exception ex) { SetError(ex.Message); }
-        finally { IsLoading = false; }
-    }
-
-    [RelayCommand]
-    private void ShowCreate()
-    {
-        Selected = null;
-        ShowDetail = false;
-        ShowCreateForm = true;
-        FormNumber = string.Empty;
-        FormType = "Single";
-        FormFloor = string.Empty;
-        FormCapacity = string.Empty;
-        FormBasePrice = string.Empty;
-        FormDescription = string.Empty;
-        ClearMessages();
     }
 
     [RelayCommand]
@@ -155,6 +155,8 @@ public partial class RoomsViewModel : BaseViewModel
             ShowCreateForm = false;
             await LoadAsync();
         }
+        catch (HttpRequestException) { SetError("Error de conexión: No se pudo crear la habitación."); }
+        catch (ApiException ex) { SetError(ex.Message); }
         catch (Exception ex) { SetError(ex.Message); }
         finally { IsLoading = false; }
     }
@@ -171,6 +173,7 @@ public partial class RoomsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
+        catch (HttpRequestException) { SetError("Error de red al desactivar."); }
         catch (Exception ex) { SetError(ex.Message); }
         finally { IsLoading = false; }
     }
@@ -187,6 +190,7 @@ public partial class RoomsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
+        catch (HttpRequestException) { SetError("Error de red al activar."); }
         catch (Exception ex) { SetError(ex.Message); }
         finally { IsLoading = false; }
     }
@@ -203,6 +207,7 @@ public partial class RoomsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
+        catch (HttpRequestException) { SetError("Error de conexión con el servicio."); }
         catch (Exception ex) { SetError(ex.Message); }
         finally { IsLoading = false; }
     }
@@ -219,6 +224,10 @@ public partial class RoomsViewModel : BaseViewModel
             SetSuccess("Habitación en limpieza.");
             await LoadAsync();
             Selected = null;
+        }
+        catch (HttpRequestException)
+        {
+            SetError("Error de red: No se pudo registrar el estado de limpieza.");
         }
         catch (ApiException ex)
         {
@@ -247,6 +256,10 @@ public partial class RoomsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
+        catch (HttpRequestException)
+        {
+            SetError("Error de red: La API no responde.");
+        }
         catch (ApiException ex)
         {
             SetError($"Error {ex.StatusCode}: {ex.Message}");
@@ -262,11 +275,21 @@ public partial class RoomsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void CloseDetail() { Selected = null; ShowDetail = false; }
+    private void ShowCreate()
+    {
+        Selected = null;
+        ShowDetail = false;
+        ShowCreateForm = true;
+        FormNumber = string.Empty;
+        FormType = "Single";
+        FormFloor = string.Empty;
+        FormCapacity = string.Empty;
+        FormBasePrice = string.Empty;
+        FormDescription = string.Empty;
+        ClearMessages();
+    }
 
-    [RelayCommand]
-    private void CloseCreateForm() { ShowCreateForm = false; }
-
+    [RelayCommand] private void CloseDetail() { Selected = null; ShowDetail = false; }
+    [RelayCommand] private void CloseCreateForm() { ShowCreateForm = false; }
     partial void OnFilterStatusChanged(string value) => _ = LoadAsync();
-
 }
