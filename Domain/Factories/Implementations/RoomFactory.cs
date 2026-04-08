@@ -24,7 +24,7 @@ public class RoomFactory : IRoomFactory
             throw new ArgumentException("Capacity must be between 1 and 20.", nameof(capacity));
 
         if (floor <= 1)
-            throw new ArgumentException("Floor cannot be negative or zero.", nameof(floor));
+            throw new ArgumentException("Floor cannot be negative or zeroo.", nameof(floor));
 
         return new Room
         {
