@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Models.Booking;
 using Desktop.Services.Interfaces;
+using Desktop.Services; 
 using System.Collections.ObjectModel;
+using System.Net.Http; 
 
 namespace Desktop.ViewModels;
 
@@ -65,7 +67,18 @@ public partial class BookingsViewModel : BaseViewModel
             var list = await _bookingService.GetAllAsync(1, 100);
             Bookings = new ObservableCollection<BookingDto>(ApplyFilter(list));
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de conexión: No se pudo contactar con el servidor de reservas.");
+        }
+        catch (ApiException ex)
+        {
+            SetError($"Error {ex.StatusCode}: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            SetError($"Error inesperado: {ex.Message}");
+        }
         finally { IsLoading = false; }
     }
 
@@ -81,7 +94,18 @@ public partial class BookingsViewModel : BaseViewModel
             Bookings = [b];
             Selected = b;
         }
-        catch { SetError($"No se encontró la reserva {SearchCode}."); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de red: Imposible buscar el código en este momento.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception)
+        {
+            SetError($"No se encontró la reserva {SearchCode}.");
+        }
         finally { IsLoading = false; }
     }
 
@@ -96,7 +120,6 @@ public partial class BookingsViewModel : BaseViewModel
             var payments = await _paymentService.GetByBookingAsync(Selected.Id);
             var pending = payments.FirstOrDefault(p => p.Status == 0)
            ?? payments.FirstOrDefault();
-              payments.FirstOrDefault();
 
             if (pending is null) { SetError("No hay pagos registrados para esta reserva."); return; }
 
@@ -106,7 +129,18 @@ public partial class BookingsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de comunicación: La API se cerró durante la confirmación.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -123,7 +157,18 @@ public partial class BookingsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de red: No se pudo registrar el Check-in.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -140,7 +185,18 @@ public partial class BookingsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de red: No se pudo registrar el Check-out.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -157,7 +213,18 @@ public partial class BookingsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de red: La cancelación no pudo procesarse.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -174,7 +241,18 @@ public partial class BookingsViewModel : BaseViewModel
             await LoadAsync();
             Selected = null;
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de conexión: El servidor de pagos no responde.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -183,4 +261,3 @@ public partial class BookingsViewModel : BaseViewModel
 
     partial void OnFilterStatusChanged(string value) => _ = LoadAsync();
 }
-

@@ -150,8 +150,8 @@ app.MapGet("/health", async (Persistence.Context.AppDbContext db) =>
 });
 
 app.UseCors("AllPolicy");
-app.UseHttpsRedirection();
-app.UseAuthentication(); // ← ANTES de Authorization
+//app.UseHttpsRedirection();
+app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();
 
