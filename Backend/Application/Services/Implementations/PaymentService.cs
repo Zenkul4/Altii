@@ -52,9 +52,13 @@ public class PaymentService : IPaymentService
             throw new InvalidOperationException(
                 $"Booking {dto.BookingId} is not pending payment (current: {booking.Status}).");
 
-        if (dto.Amount != booking.TotalPrice)
+        var bookingServices = await _uow.BookingServices.GetByBookingAsync(booking.Id, ct);
+        var servicesTotal = bookingServices.Sum(bs => bs.UnitPrice * bs.Quantity);
+        var expectedTotal = booking.TotalPrice + servicesTotal;
+
+        if (dto.Amount != expectedTotal)
             throw new ArgumentException(
-                $"Payment amount ({dto.Amount}) does not match booking total ({booking.TotalPrice}).");
+                $"Payment amount ({dto.Amount}) does not match expected total ({expectedTotal}).");
 
         var payment = _factory.Create(dto.BookingId, dto.Amount, dto.PaymentMethod);
 

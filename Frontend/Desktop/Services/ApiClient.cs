@@ -17,7 +17,7 @@ public class ApiClient
         IgnoreReadOnlyProperties = true,
     };
 
-    public const string BaseUrl = "https://localhost:7220/api";
+    public const string BaseUrl = "http://localhost:5191/api";
 
     public ApiClient()
     {

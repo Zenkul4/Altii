@@ -2,8 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Models.User;
 using Desktop.Services.Interfaces;
+using Desktop.Services; // Inyectado para ApiException
 using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
+using System.Net.Http; // Inyectado para HttpRequestException
 
 namespace Desktop.ViewModels;
 
@@ -59,7 +61,18 @@ public partial class UsersViewModel : BaseViewModel
                     ? list
                     : list.Where(u => u.RoleLabel == FilterRole));
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("Error de conexión: El servidor de ALTI no responde. Verifique que la API esté encendida.");
+        }
+        catch (ApiException ex)
+        {
+            SetError($"Error del servidor ({ex.StatusCode}): {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            SetError($"Error inesperado: {ex.Message}");
+        }
         finally { IsLoading = false; }
     }
 
@@ -111,7 +124,18 @@ public partial class UsersViewModel : BaseViewModel
             ShowCreateForm = false;
             await LoadAsync();
         }
-        catch (Exception ex) { SetError(ex.Message); }
+        catch (HttpRequestException)
+        {
+            SetError("No se pudo enviar la solicitud. El servidor no responde.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -119,9 +143,27 @@ public partial class UsersViewModel : BaseViewModel
     private async Task DeactivateAsync()
     {
         if (Selected is null) return;
-        IsLoading = true; ClearMessages();
-        try { await _userService.DeactivateAsync(Selected.Id); SetSuccess("Usuario desactivado."); await LoadAsync(); Selected = null; }
-        catch (Exception ex) { SetError(ex.Message); }
+        IsLoading = true;
+        ClearMessages();
+        try
+        {
+            await _userService.DeactivateAsync(Selected.Id);
+            SetSuccess("Usuario desactivado.");
+            await LoadAsync();
+            Selected = null;
+        }
+        catch (HttpRequestException)
+        {
+            SetError("Fallo de red: No se pudo desactivar el usuario.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
@@ -129,9 +171,27 @@ public partial class UsersViewModel : BaseViewModel
     private async Task ReactivateAsync()
     {
         if (Selected is null) return;
-        IsLoading = true; ClearMessages();
-        try { await _userService.ReactivateAsync(Selected.Id); SetSuccess("Usuario reactivado."); await LoadAsync(); Selected = null; }
-        catch (Exception ex) { SetError(ex.Message); }
+        IsLoading = true;
+        ClearMessages();
+        try
+        {
+            await _userService.ReactivateAsync(Selected.Id);
+            SetSuccess("Usuario reactivado.");
+            await LoadAsync();
+            Selected = null;
+        }
+        catch (HttpRequestException)
+        {
+            SetError("Fallo de red: No se pudo reactivar el usuario.");
+        }
+        catch (ApiException ex)
+        {
+            SetError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            SetError(ex.Message);
+        }
         finally { IsLoading = false; }
     }
 
