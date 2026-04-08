@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Helpers;
+using Desktop.Models.Auth;
 using Desktop.Services;
 using Desktop.Services.Interfaces;
 using Desktop.Views;
+using System.Net.Http;
 using System.Windows;
 
 namespace Desktop.ViewModels;
@@ -25,7 +27,6 @@ public partial class LoginViewModel : BaseViewModel
         _authService = authService;
     }
 
-    // Se llama desde BaseViewModel cuando IsLoading cambia
     protected override void OnLoadingStateChanged(bool isLoading)
         => OnPropertyChanged(nameof(LoginButtonText));
 
@@ -53,6 +54,13 @@ public partial class LoginViewModel : BaseViewModel
             {
                 if (w is LoginView) { w.Close(); break; }
             }
+
+        }
+        catch (HttpRequestException)
+        {
+            MessageBox.Show("Error de red: El servidor de ALTI no responde. Verifique su conexión.",
+                            "Error de Conexión", MessageBoxButton.OK, MessageBoxImage.Error);
+            SetError("Servicio no disponible.");
         }
         catch (ApiException ex) when (ex.StatusCode == 403)
         {
