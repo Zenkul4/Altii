@@ -21,6 +21,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import ForgotPasswordPage from "./views/pages/ForgotPasswordPage";
 import BookingConfirmationPage from "./views/pages/BookingConfirmationPage";
 import ErrorPage from "./views/pages/ErrorPage";
+import BookingServicesPage from "./views/pages/BookingServicesPage";
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/gallery" element={<GalleryPage />} />
                 <Route path="/bookings/new" element={<ProtectedRoute><NewBookingPage /></ProtectedRoute>} />
+                <Route path="/bookings/:id/services" element={<ProtectedRoute><BookingServicesPage /></ProtectedRoute>} />
                 <Route path="/bookings/:id/pay" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />
                 <Route path="/bookings/:id" element={<ProtectedRoute><BookingDetailPage /></ProtectedRoute>} />
                 <Route path="/my-bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />

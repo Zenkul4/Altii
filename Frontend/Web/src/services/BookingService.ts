@@ -1,9 +1,22 @@
 import client from "./client";
 import type { BookingResponseDto, CreateBookingDto } from "../models/Booking";
 
+export interface CreateBookingByTypeDto {
+  guestId: number;
+  roomType: number;
+  checkInDate: string;
+  checkOutDate: string;
+  notes?: string;
+}
+
 const BookingService = {
   create: async (dto: CreateBookingDto): Promise<BookingResponseDto> => {
     const { data } = await client.post("/Bookings", dto);
+    return data;
+  },
+
+  createByType: async (dto: CreateBookingByTypeDto): Promise<BookingResponseDto> => {
+    const { data } = await client.post("/Bookings/by-type", dto);
     return data;
   },
 
@@ -26,6 +39,11 @@ const BookingService = {
 
   cancel: async (id: number): Promise<void> => {
     await client.patch(`/Bookings/${id}/cancel`);
+  },
+
+  getExpectedTotal: async (bookingId: number): Promise<number> => {
+    const { data } = await client.get(`/Bookings/${bookingId}/expected-total`);
+    return data.total;
   },
 };
 

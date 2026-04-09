@@ -45,8 +45,9 @@ export default function ProfilePage() {
       const updated = await UserService.update(user.id, { firstName:form.firstName, lastName:form.lastName, phone:form.phone||undefined });
       setUser({ ...user, fullName:`${updated.firstName} ${updated.lastName}` });
       showToast("Perfil actualizado correctamente","success");
-    } catch (err:any) {
-      showToast(err.message??"Error al actualizar el perfil.","error");
+} catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Error al actualizar el perfil.";
+    showToast(message, "error");
     } finally {
       setLoading(false);
     }
