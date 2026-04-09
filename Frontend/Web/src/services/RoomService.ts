@@ -1,5 +1,5 @@
 import client from "./client";
-import type { RoomResponseDto } from "../models/Room";
+import type { RoomResponseDto, RoomTypeAvailabilityDto } from "../models/Room";
 
 const RoomService = {
   getAvailable: async (
@@ -12,6 +12,16 @@ const RoomService = {
     if (type !== undefined) params.type = type;
     if (minCapacity !== undefined) params.minCapacity = minCapacity;
     const { data } = await client.get("/Rooms/available", { params });
+    return data;
+  },
+
+  getAvailabilityByType: async (
+    checkIn: string,
+    checkOut: string
+  ): Promise<RoomTypeAvailabilityDto[]> => {
+    const { data } = await client.get("/Rooms/availability", {
+      params: { checkIn, checkOut },
+    });
     return data;
   },
 

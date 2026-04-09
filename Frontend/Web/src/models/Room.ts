@@ -16,3 +16,14 @@ export const RoomTypeLabel: Record<number, string> = {
   3: "Family",
   4: "Penthouse",
 };
+
+export interface RoomTypeAvailabilityDto {
+  type: number;
+  typeName: string;
+  totalRooms: number;
+  availableRooms: number;
+  maxCapacity: number;
+  minPrice: number;
+  maxPrice: number;
+  sampleDescription?: string;
+}

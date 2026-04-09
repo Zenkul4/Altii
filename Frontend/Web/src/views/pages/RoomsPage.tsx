@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import useRoomController from "../../controllers/useRoomController";
 import { RoomTypeLabel } from "../../models/Room";
+import type { RoomTypeAvailabilityDto } from "../../models/Room";
 import { RoomCardSkeleton } from "../components/Skeleton";
 import { useTheme } from "../../context/ThemeContext";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import DateRangePicker from "../components/DateRangePicker";
 import SectionDivider from "../components/SectionDivider";
-import type { RoomResponseDto } from "../../models/Room";
 import { useSEO } from "../../hooks/useSEO";
 
 /* ── DATA ─────────────────────────────────────────────── */
@@ -43,6 +43,25 @@ function AnimSection({ children, className = "", anim = "anim-fade-up" }: {
     );
 }
 
+function WhyAltiCard({ num, label, desc, icon, delay }: {
+    num: string; label: string; desc: string; icon: string; delay: string;
+}) {
+    const { ref, visible } = useScrollAnimation();
+    return (
+        <div
+            ref={ref}
+            className={`anim-fade-up ${delay} ${visible ? "visible" : ""} bg-bg-base p-10 text-center hover:bg-bg-white transition-all duration-300 group cursor-default`}
+        >
+            <span className="text-primary text-2xl block mb-4 group-hover:scale-125 transition-transform duration-400">
+                {icon}
+            </span>
+            <p className="font-serif text-4xl text-primary font-medium mb-1">{num}</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-text-sub font-semibold mb-3">{label}</p>
+            <p className="text-text-sub text-xs leading-relaxed">{desc}</p>
+        </div>
+    );
+}
+
 /* ── Component ────────────────────────────────────────── */
 export default function RoomsPage() {
     useSEO({ title: "Habitaciones", description: "Explore nuestras habitaciones de lujo." });
@@ -50,11 +69,15 @@ export default function RoomsPage() {
     const { theme } = useTheme();
     const {
         rooms, allRooms, loading, searched, error,
-        typeFilter, searchRooms, filterByType, selectRoom,
+        typeFilter, searchRooms, filterByType, selectType,
     } = useRoomController();
 
-    const today = new Date().toISOString().split("T")[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    const [today] = useState(() => new Date().toISOString().split("T")[0]);
+    const [tomorrow] = useState(() => {
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        return d.toISOString().split("T")[0];
+    });
 
     const [checkIn, setCheckIn] = useState(today);
     const [checkOut, setCheckOut] = useState(tomorrow);
@@ -165,7 +188,7 @@ export default function RoomsPage() {
                             <div style={{ borderBottom: "1px solid var(--bg-200)", display: "flex" }}>
                                 {[
                                     { icon: "◈", label: "Tipo de estadía", value: "Todas las habitaciones" },
-                                    { icon: "◉", label: "Huéspedes", value: "1 – 4 personas" },
+                                    { icon: "◉", label: "Huéspedes", value: "1 – 6 personas" },
                                     { icon: "◎", label: "Duración", value: nights > 0 ? `${nights} noche${nights > 1 ? "s" : ""}` : "—" },
                                 ].map((item, i, arr) => (
                                     <div
@@ -310,7 +333,7 @@ export default function RoomsPage() {
                                             </span>
                                         </div>
                                         <p className="font-serif text-2xl text-text-main font-medium">
-                                            {rooms.length} habitación{rooms.length !== 1 ? "es" : ""} encontrada{rooms.length !== 1 ? "s" : ""}
+                                            {rooms.length} tipo{rooms.length !== 1 ? "s" : ""} de habitación disponible{rooms.length !== 1 ? "s" : ""}
                                             {nights > 0 && (
                                                 <span className="text-primary"> · {nights} noche{nights !== 1 ? "s" : ""}</span>
                                             )}
@@ -352,7 +375,7 @@ export default function RoomsPage() {
                                 <RoomGrid
                                     rooms={rooms}
                                     nights={nights}
-                                    onBook={(room) => selectRoom(room, checkIn, checkOut)}
+                                    onBook={(roomType) => selectType(roomType, checkIn, checkOut)}
                                 />
                             )}
                         </>
@@ -387,28 +410,13 @@ export default function RoomsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-bg-card">
                         {[
-                            { num: "48", label: "Habitaciones", desc: "Desde suites presidenciales hasta confortables rooms para viajeros solos.", icon: "◈" },
-                            { num: "5★", label: "Calificación", desc: "Reconocidos como el mejor hotel boutique del Caribe por 3 años consecutivos.", icon: "★" },
-                            { num: "24/7", label: "Servicio", desc: "Nuestro equipo de concierge disponible a cualquier hora para lo que necesite.", icon: "◉" },
-                            { num: "100%", label: "Satisfacción", desc: "Más de 50,000 huéspedes satisfechos avalan nuestra promesa de excelencia.", icon: "◎" },
-                        ].map((item, i) => {
-                            const { ref, visible } = useScrollAnimation();
-                            const delays = ["delay-100", "delay-200", "delay-300", "delay-400"];
-                            return (
-                                <div
-                                    key={i}
-                                    ref={ref}
-                                    className={`anim-fade-up ${delays[i]} ${visible ? "visible" : ""} bg-bg-base p-10 text-center hover:bg-bg-white transition-all duration-300 group cursor-default`}
-                                >
-                                    <span className="text-primary text-2xl block mb-4 group-hover:scale-125 transition-transform duration-400">
-                                        {item.icon}
-                                    </span>
-                                    <p className="font-serif text-4xl text-primary font-medium mb-1">{item.num}</p>
-                                    <p className="text-[10px] tracking-[0.3em] uppercase text-text-sub font-semibold mb-3">{item.label}</p>
-                                    <p className="text-text-sub text-xs leading-relaxed">{item.desc}</p>
-                                </div>
-                            );
-                        })}
+                            { num: "48", label: "Habitaciones", desc: "Desde suites presidenciales hasta confortables rooms para viajeros solos.", icon: "◈", delay: "delay-100" },
+                            { num: "5★", label: "Calificación", desc: "Reconocidos como el mejor hotel boutique del Caribe por 3 años consecutivos.", icon: "★", delay: "delay-200" },
+                            { num: "24/7", label: "Servicio", desc: "Nuestro equipo de concierge disponible a cualquier hora para lo que necesite.", icon: "◉", delay: "delay-300" },
+                            { num: "100%", label: "Satisfacción", desc: "Más de 50,000 huéspedes satisfechos avalan nuestra promesa de excelencia.", icon: "◎", delay: "delay-400" },
+                        ].map((item, i) => (
+                            <WhyAltiCard key={i} {...item} />
+                        ))}
                     </div>
                 </div>
             </section>
@@ -479,30 +487,30 @@ export default function RoomsPage() {
 
 /* ── Room Grid with stagger ───────────────────────────── */
 function RoomGrid({ rooms, nights, onBook }: {
-    rooms: RoomResponseDto[];
+    rooms: RoomTypeAvailabilityDto[];
     nights: number;
-    onBook: (room: RoomResponseDto) => void;
+    onBook: (roomType: RoomTypeAvailabilityDto) => void;
 }) {
     const { ref, visible } = useScrollAnimation(0.05);
     const delays = ["delay-100", "delay-200", "delay-300", "delay-400", "delay-500", "delay-600"];
 
     return (
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rooms.map((room, i) => (
+            {rooms.map((roomType, i) => (
                 <div
-                    key={room.id}
+                    key={roomType.type}
                     className={`anim-fade-up ${delays[i % 6] ?? "delay-600"} ${visible ? "visible" : ""}`}
                 >
-                    <RoomCard room={room} nights={nights} onBook={() => onBook(room)} />
+                    <RoomTypeCard roomType={roomType} nights={nights} onBook={() => onBook(roomType)} />
                 </div>
             ))}
         </div>
     );
 }
 
-/* ── Room Card ────────────────────────────────────────── */
-function RoomCard({ room, nights, onBook }: {
-    room: RoomResponseDto;
+/* ── Room Type Card ───────────────────────────────────── */
+function RoomTypeCard({ roomType, nights, onBook }: {
+    roomType: RoomTypeAvailabilityDto;
     nights: number;
     onBook: () => void;
 }) {
@@ -518,23 +526,27 @@ function RoomCard({ room, nights, onBook }: {
             {/* Image */}
             <div className="relative h-60 overflow-hidden">
                 <img
-                    src={roomImages[room.type] ?? roomImages[0]}
-                    alt={room.number}
+                    src={roomImages[roomType.type] ?? roomImages[0]}
+                    alt={roomType.typeName}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
                 {/* Type badge */}
                 <span className="absolute top-4 left-4 bg-primary text-white text-[9px] tracking-[0.2em] uppercase px-3 py-1.5 font-semibold">
-                    {RoomTypeLabel[room.type]}
+                    {RoomTypeLabel[roomType.type]}
+                </span>
+
+                {/* Availability badge */}
+                <span className="absolute top-4 right-4 bg-black/60 text-white text-[9px] tracking-[0.15em] uppercase px-3 py-1.5 font-semibold">
+                    {roomType.availableRooms} disponible{roomType.availableRooms > 1 ? "s" : ""}
                 </span>
 
                 {/* Total price overlay on hover */}
                 {nights > 0 && (
-                    <div className={`absolute bottom-4 right-4 bg-bg-base/90 px-3 py-2 text-right transition-all duration-400 ${hovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-                        }`}>
-                        <p className="text-[9px] tracking-widest uppercase text-text-sub font-semibold">Total</p>
-                        <p className="font-serif text-xl text-primary font-medium">${room.basePrice * nights}</p>
+                    <div className={`absolute bottom-4 right-4 bg-bg-base/90 px-3 py-2 text-right transition-all duration-400 ${hovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+                        <p className="text-[9px] tracking-widest uppercase text-text-sub font-semibold">Desde</p>
+                        <p className="font-serif text-xl text-primary font-medium">${roomType.minPrice * nights}</p>
                     </div>
                 )}
             </div>
@@ -543,10 +555,14 @@ function RoomCard({ room, nights, onBook }: {
             <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
                     <h3 className="font-serif text-xl text-text-main font-medium">
-                        Habitación {room.number}
+                        {RoomTypeLabel[roomType.type]}
                     </h3>
                     <div className="text-right">
-                        <p className="text-primary font-bold text-lg">${room.basePrice}</p>
+                        <p className="text-primary font-bold text-lg">
+                            {roomType.minPrice === roomType.maxPrice
+                                ? `$${roomType.minPrice}`
+                                : `$${roomType.minPrice} — $${roomType.maxPrice}`}
+                        </p>
                         <p className="text-[10px] text-text-sub tracking-widest uppercase font-medium">/noche</p>
                     </div>
                 </div>
@@ -554,17 +570,17 @@ function RoomCard({ room, nights, onBook }: {
                 {/* Details */}
                 <div className="flex gap-4 text-[10px] tracking-widest uppercase text-text-sub mb-4 font-semibold">
                     <span className="flex items-center gap-1">
-                        <span className="text-primary text-xs">◈</span> Piso {room.floor}
+                        <span className="text-primary text-xs">◈</span> Hasta {roomType.maxCapacity} persona{roomType.maxCapacity > 1 ? "s" : ""}
                     </span>
                     <span>·</span>
                     <span className="flex items-center gap-1">
-                        <span className="text-primary text-xs">◈</span> {room.capacity} persona{room.capacity > 1 ? "s" : ""}
+                        <span className="text-primary text-xs">◈</span> {roomType.availableRooms}/{roomType.totalRooms} disponible{roomType.availableRooms > 1 ? "s" : ""}
                     </span>
                 </div>
 
-                {room.description && (
+                {roomType.sampleDescription && (
                     <p className="text-text-sub text-sm leading-relaxed mb-5 line-clamp-2">
-                        {room.description}
+                        {roomType.sampleDescription}
                     </p>
                 )}
 
@@ -575,7 +591,7 @@ function RoomCard({ room, nights, onBook }: {
                             {nights} noche{nights > 1 ? "s" : ""}
                         </span>
                         <span className="font-serif text-lg text-text-main font-medium">
-                            ${room.basePrice * nights}
+                            desde ${roomType.minPrice * nights}
                         </span>
                     </div>
                 )}

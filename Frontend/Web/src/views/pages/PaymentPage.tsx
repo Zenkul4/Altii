@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import usePaymentController from "../../controllers/usePaymentController";
 import type { BookingResponseDto } from "../../models/Booking";
+import { useEffect } from "react";
+import BookingService from "../../services/BookingService";
 
 const methods = [
     { value: "CreditCard", label: "Tarjeta de Crédito", icon: "💳" },
@@ -12,12 +14,25 @@ const methods = [
 
 export default function PaymentPage() {
     const navigate = useNavigate();
-    const { state } = useLocation() as { state: { booking: BookingResponseDto; total: number } };
+    const { state } = useLocation() as { state: { booking: BookingResponseDto; total: number } | null };
     const { loading, error, processPayment } = usePaymentController();
     const [method, setMethod] = useState("CreditCard");
+    const [realTotal, setRealTotal] = useState<number | null>(null);
+    const [loadingTotal, setLoadingTotal] = useState(true);
 
-    if (!state?.booking) { navigate("/my-bookings"); return null; }
-    const { booking, total } = state;
+    const booking = state?.booking;
+
+    useEffect(() => {
+        if (!booking) return;
+        BookingService.getExpectedTotal(booking.id)
+            .then(setRealTotal)
+            .catch(() => setRealTotal(state?.total ?? 0))
+            .finally(() => setLoadingTotal(false));
+    }, [booking?.id]);
+
+    if (!booking) { navigate("/my-bookings"); return null; }
+
+    const total = realTotal ?? state?.total ?? 0;
 
     return (
         <div className="min-h-screen bg-bg-base pt-20">
@@ -82,7 +97,11 @@ export default function PaymentPage() {
                                 <div className="flex justify-between items-center pt-2">
                                     <span className="text-[10px] tracking-[0.2em] uppercase text-text-main font-medium">Total a pagar</span>
                                     <div className="text-right">
-                                        <p className="font-serif text-4xl text-primary">${total}</p>
+                                        {loadingTotal ? (
+                                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <p className="font-serif text-4xl text-primary">${total}</p>
+                                        )}
                                         <p className="text-[10px] text-text-sub tracking-widest uppercase">USD</p>
                                     </div>
                                 </div>
@@ -100,7 +119,7 @@ export default function PaymentPage() {
                             <button
                                 onClick={() => processPayment(
                                     { bookingId: booking.id, amount: total, paymentMethod: method },
-                                    booking   // ← pasa el booking
+                                    booking
                                 )}
                                 disabled={loading}
                                 className="btn-primary flex-1 py-4">
