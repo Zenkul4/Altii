@@ -254,4 +254,15 @@ public class BookingService : IBookingService
 
         return await CreateAsync(createDto, ct);
     }
+
+    public async Task<decimal> GetExpectedTotalAsync(int bookingId, CancellationToken ct = default)
+    {
+        var booking = await _uow.Bookings.GetByIdAsync(bookingId, ct)
+            ?? throw new KeyNotFoundException($"Booking {bookingId} not found.");
+
+        var bookingServices = await _uow.BookingServices.GetByBookingAsync(bookingId, ct);
+        var servicesTotal = bookingServices.Sum(bs => bs.UnitPrice * bs.Quantity);
+
+        return booking.TotalPrice + servicesTotal;
+    }
 }

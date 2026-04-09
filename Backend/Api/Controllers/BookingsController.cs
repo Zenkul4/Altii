@@ -53,6 +53,13 @@ public class BookingsController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("{id}/expected-total")]
+    public async Task<IActionResult> GetExpectedTotal(int id, CancellationToken ct)
+    {
+        var total = await _bookingService.GetExpectedTotalAsync(id, ct);
+        return Ok(new { total });
+    }
+
     [HttpGet("active")]
     public async Task<IActionResult> GetActive(
         [FromQuery] int page = 1,

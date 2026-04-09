@@ -56,7 +56,7 @@ public class PaymentService : IPaymentService
         var servicesTotal = bookingServices.Sum(bs => bs.UnitPrice * bs.Quantity);
         var expectedTotal = booking.TotalPrice + servicesTotal;
 
-        if (dto.Amount != expectedTotal)
+        if (Math.Abs(dto.Amount - expectedTotal) > 0.01m)
             throw new ArgumentException(
                 $"Payment amount ({dto.Amount}) does not match expected total ({expectedTotal}).");
 
