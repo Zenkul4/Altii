@@ -1,5 +1,4 @@
-﻿// Frontend/Desktop/ViewModels/MainShellViewModel.cs
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Helpers;
 using Desktop.Services.Interfaces;
