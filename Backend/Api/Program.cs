@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new()
@@ -18,7 +20,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API para el sistema de gestión hotelero",
     });
 
-    // Swagger con JWT
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -46,7 +47,6 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddAllServices(builder.Configuration);
 
-// JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -84,7 +84,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Error middleware
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -150,8 +149,7 @@ app.MapGet("/health", async (Persistence.Context.AppDbContext db) =>
 });
 
 app.UseCors("AllPolicy");
-//app.UseHttpsRedirection();
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
