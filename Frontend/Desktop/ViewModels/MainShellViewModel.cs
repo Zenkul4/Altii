@@ -1,9 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿// Frontend/Desktop/ViewModels/MainShellViewModel.cs
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Helpers;
 using Desktop.Services.Interfaces;
-using System.Net.Http; // Para manejo de errores de red si fuera necesario
-using System.Windows;
 
 namespace Desktop.ViewModels;
 
@@ -28,10 +27,17 @@ public partial class MainShellViewModel : BaseViewModel
     [ObservableProperty]
     private string _selectedMenu = "Dashboard";
 
-    public string UserName => SessionStore.CurrentUser?.FullName ?? string.Empty;
-    public string UserRole => SessionStore.CurrentUser?.RoleName ?? string.Empty;
-    public string UserInitial => UserName.Length > 0 ? UserName[0].ToString().ToUpper() : "?";
-    public bool IsAdmin => SessionStore.IsAdmin;
+    [ObservableProperty]
+    private string _userName = string.Empty;
+
+    [ObservableProperty]
+    private string _userRole = string.Empty;
+
+    [ObservableProperty]
+    private string _userInitial = "?";
+
+    [ObservableProperty]
+    private bool _isAdmin;
 
     public MainShellViewModel(
         IAuthService authService,
@@ -55,6 +61,16 @@ public partial class MainShellViewModel : BaseViewModel
         _servicesVm = servicesVm;
 
         _currentPage = dashboardVm;
+
+        UpdateSessionInfo();
+    }
+
+    public void UpdateSessionInfo()
+    {
+        UserName = SessionStore.CurrentUser?.FullName ?? string.Empty;
+        UserRole = SessionStore.CurrentUser?.RoleName ?? string.Empty;
+        UserInitial = UserName.Length > 0 ? UserName[0].ToString().ToUpper() : "?";
+        IsAdmin = SessionStore.IsAdmin || UserRole.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
     }
 
     [RelayCommand]
@@ -73,7 +89,6 @@ public partial class MainShellViewModel : BaseViewModel
             "Services" => "Servicios Adicionales",
             _ => page
         };
-
         CurrentPage = page switch
         {
             "Dashboard" => _dashboardVm,
@@ -86,31 +101,20 @@ public partial class MainShellViewModel : BaseViewModel
             "Services" => _servicesVm,
             _ => _dashboardVm
         };
-
-        // Al navegar, limpiamos mensajes de error previos de la vista base
-        ClearMessages();
     }
 
     [RelayCommand]
     private void Logout()
     {
-        try
-        {
-            _authService.Logout();
-            SessionStore.CurrentUser = null;
+        _authService.Logout();
+        SessionStore.CurrentUser = null;
 
-            var login = App.Services.GetService(typeof(Desktop.Views.LoginView)) as Desktop.Views.LoginView;
-            login!.Show();
+        var login = App.Services.GetService(typeof(Desktop.Views.LoginView)) as Desktop.Views.LoginView;
+        login!.Show();
 
-            foreach (Window w in Application.Current.Windows)
-            {
-                if (w is Desktop.Views.MainShellView) { w.Close(); break; }
-            }
-        }
-        catch (Exception ex)
+        foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
         {
-            // Error al intentar cerrar sesión o manipular ventanas
-            MessageBox.Show($"Error al cerrar sesión: {ex.Message}", "ALTI System", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (w is Desktop.Views.MainShellView) { w.Close(); break; }
         }
     }
 }
