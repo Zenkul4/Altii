@@ -15,8 +15,6 @@ public abstract partial class BaseViewModel : ObservableObject
     private string _successMessage = string.Empty;
 
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
-
-    // Partial generado por CommunityToolkit — subclases pueden reaccionar vía override
     partial void OnIsLoadingChanged(bool value) => OnLoadingStateChanged(value);
 
     protected virtual void OnLoadingStateChanged(bool isLoading) { }

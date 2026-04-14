@@ -15,6 +15,8 @@ public partial class MainShellView : Window
         InitializeComponent();
         DataContext = vm;
 
+        Loaded += (s, e) => vm.UpdateSessionInfo();
+
         _clock = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _clock.Tick += (_, _) =>
         {

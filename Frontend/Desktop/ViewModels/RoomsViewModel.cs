@@ -4,7 +4,7 @@ using Desktop.Models.Room;
 using Desktop.Services;
 using Desktop.Services.Interfaces;
 using System.Collections.ObjectModel;
-using System.Net.Http; // Inyectado para manejo de errores de red
+using System.Net.Http;
 using static Desktop.Models.Room.RoomDto;
 
 namespace Desktop.ViewModels;

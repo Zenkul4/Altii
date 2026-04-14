@@ -18,7 +18,6 @@ public partial class SeasonsViewModel : BaseViewModel
     [ObservableProperty] private bool _showCreateForm;
     [ObservableProperty] private bool _isEditing;
 
-    // Form fields
     [ObservableProperty] private string _formName = string.Empty;
     [ObservableProperty] private DateTime _formStartDate = DateTime.Today;
     [ObservableProperty] private DateTime _formEndDate = DateTime.Today.AddMonths(1);

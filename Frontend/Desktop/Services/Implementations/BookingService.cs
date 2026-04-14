@@ -8,7 +8,7 @@ public class BookingService : IBookingService
     private readonly ApiClient _api;
     public BookingService(ApiClient api) => _api = api;
 
-    public Task<List<BookingDto>> GetAllAsync(int page = 1, int pageSize = 50)        // ← nueva
+    public Task<List<BookingDto>> GetAllAsync(int page = 1, int pageSize = 50)      
         => _api.GetAsync<List<BookingDto>>($"Bookings/all?page={page}&pageSize={pageSize}");
 
     public Task<List<BookingDto>> GetActiveAsync(int page = 1, int pageSize = 50)

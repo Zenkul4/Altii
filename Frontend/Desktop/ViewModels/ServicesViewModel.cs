@@ -18,7 +18,7 @@ public partial class ServicesViewModel : BaseViewModel
     [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private string _filterStatus = "Todos";
 
-    // Form
+
     [ObservableProperty] private string _formName = string.Empty;
     [ObservableProperty] private string _formPrice = "0";
     [ObservableProperty] private string _formDescription = string.Empty;

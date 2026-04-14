@@ -69,7 +69,7 @@ public partial class MainShellViewModel : BaseViewModel
         UserName = SessionStore.CurrentUser?.FullName ?? string.Empty;
         UserRole = SessionStore.CurrentUser?.RoleName ?? string.Empty;
         UserInitial = UserName.Length > 0 ? UserName[0].ToString().ToUpper() : "?";
-        IsAdmin = SessionStore.IsAdmin || UserRole.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+        IsAdmin = SessionStore.IsAdmin;
     }
 
     [RelayCommand]
