@@ -2,10 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using Desktop.Models.User;
 using Desktop.Services.Interfaces;
-using Desktop.Services; // Inyectado para ApiException
+using Desktop.Services; 
 using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
-using System.Net.Http; // Inyectado para HttpRequestException
+using System.Net.Http; 
 
 namespace Desktop.ViewModels;
 
@@ -19,7 +19,7 @@ public partial class UsersViewModel : BaseViewModel
     [ObservableProperty] private bool _showCreateForm;
     [ObservableProperty] private string _filterRole = "All";
 
-    // Form fields
+
     [ObservableProperty] private string _formFirstName = string.Empty;
     [ObservableProperty] private string _formLastName = string.Empty;
     [ObservableProperty] private string _formEmail = string.Empty;

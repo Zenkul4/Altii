@@ -22,7 +22,6 @@ public partial class RatesViewModel : BaseViewModel
     [ObservableProperty] private bool _showCreateForm;
     [ObservableProperty] private bool _isEditing;
 
-    // Form
     [ObservableProperty] private int _formRoomType;
     [ObservableProperty] private string _formPrice = "0";
 
