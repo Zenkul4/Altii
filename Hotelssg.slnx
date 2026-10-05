@@ -3,6 +3,7 @@
     <Project Path="Backend/Api/Api.csproj" />
     <Project Path="Backend/Application/Application.csproj" />
     <Project Path="Backend/Infrastructure/Infrastructure.csproj" />
+    <Project Path="Backend/Tests/Backend.Tests.csproj" />
     <Project Path="Domain/Domain.csproj" Id="d6364146-540d-4f01-95cd-535b6e7b1478" />
     <Project Path="Persistence/Persistence.csproj" Id="465d22c3-125f-4323-8991-b9b45f2370d6" />
   </Folder>
@@ -11,6 +12,5 @@
   </Folder>
   <Folder Name="/Frontend/">
     <Project Path="Frontend/Desktop/Desktop.csproj" />
-    <Project Path="Frontend/Web/Web.csproj" />
   </Folder>
 </Solution>
