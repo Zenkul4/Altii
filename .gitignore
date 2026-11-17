@@ -3,3 +3,13 @@ obj/
 .vs/
 *.suo
 *.user
+
+# Local configuration and secrets
+**/appsettings*.json
+!**/appsettings.example.json
+**/secrets*.json
+**/.env
+**/.env.*
+!.env.example
+**/*.pfx
+**/*.pem
